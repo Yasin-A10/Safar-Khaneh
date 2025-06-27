@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/widgets/inputs/text_field.dart';
+import 'package:safar_khaneh/core/utils/validators.dart';
+import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -47,55 +56,64 @@ class LoginScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  spacing: 12,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InputTextField(
-                      label: 'ایمیل',
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    InputTextField(
-                      obscureText: true,
-                      label: 'رمز عبور',
-                      maxLines: 1,
-                    ),
-                    Button(
-                      label: 'ورود',
-                      onPressed: () {
-                        context.go('/home');
-                      },
-                      width: double.infinity,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 8,
-                      children: [
-                        Text(
-                          'حساب کاربری ندارید؟',
-                          style: TextStyle(
-                            color: AppColors.grey500,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            context.go('/register');
-                          },
-                          child: Text(
-                            'ثبت نام',
-                            style: TextStyle(
-                              color: AppColors.primary800,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    spacing: 12,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InputTextFormField(
+                        label: 'ایمیل',
+                        keyboardType: TextInputType.emailAddress,
+                        validator:
+                            (value) =>
+                                AppValidators.email(value, fieldName: 'ایمیل'),
+                      ),
+                      InputTextFormField(
+                        obscureText: true,
+                        label: 'رمز عبور',
+                        maxLines: 1,
+                        validator: AppValidators.password,
+                      ),
+                      Button(
+                        label: 'ورود',
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            context.go('/home');
+                          }
+                        },
+                        width: double.infinity,
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 8,
+                children: [
+                  Text(
+                    'حساب کاربری ندارید؟',
+                    style: TextStyle(
+                      color: AppColors.grey500,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.go('/register');
+                    },
+                    child: Text(
+                      'ثبت نام',
+                      style: TextStyle(
+                        color: AppColors.primary800,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
