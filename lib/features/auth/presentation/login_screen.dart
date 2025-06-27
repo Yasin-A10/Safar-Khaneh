@@ -67,13 +67,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator:
                             (value) =>
-                                AppValidators.email(value, fieldName: 'ایمیل'),
+                                AppValidator.email(value, fieldName: 'ایمیل'),
                       ),
                       InputTextFormField(
                         obscureText: true,
                         label: 'رمز عبور',
                         maxLines: 1,
-                        validator: AppValidators.password,
+                        validator: AppValidator.password,
                       ),
                       Button(
                         label: 'ورود',

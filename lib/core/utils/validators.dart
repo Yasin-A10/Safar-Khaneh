@@ -1,4 +1,4 @@
-class AppValidators {
+class AppValidator {
   static String? email(String? value, {String fieldName = 'ایمیل'}) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName نمی‌تواند خالی باشد';
