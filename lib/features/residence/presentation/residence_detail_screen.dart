@@ -157,11 +157,14 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.network(
-                    widget.residence.imageUrl!,
-                    width: MediaQuery.of(context).size.width,
-                    height: 300,
-                    fit: BoxFit.cover,
+                  Hero(
+                    tag: widget.residence.id.toString(),
+                    child: Image.network(
+                      widget.residence.imageUrl!,
+                      width: MediaQuery.of(context).size.width,
+                      height: 300,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Transform.translate(
                     offset: const Offset(0, -32),
