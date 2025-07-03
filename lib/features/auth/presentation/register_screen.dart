@@ -1,11 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/widgets/inputs/text_field.dart';
+import 'package:safar_khaneh/core/utils/validators.dart';
+import 'package:safar_khaneh/features/auth/presentation/register_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
+import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final RegisterService _registerService = RegisterService();
+
+  bool _isLoading = false;
+
+  Future<void> _handleRegister() async {
+    if (!registerFormKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _registerService.register(
+        fullName: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ثبت‌نام با موفقیت انجام شد'),),
+        );
+        context.go('/login'); // یا '/home' بسته به مسیر بعد از ثبت‌نام
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -13,10 +68,9 @@ class RegisterScreen extends StatelessWidget {
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
-          resizeToAvoidBottomInset: false, //for bottom overload
+          resizeToAvoidBottomInset: false,
           backgroundColor: AppColors.white,
           body: Column(
-            spacing: 0,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
@@ -25,7 +79,6 @@ class RegisterScreen extends StatelessWidget {
                 width: 500,
               ),
               Column(
-                spacing: 8,
                 children: [
                   Text(
                     'اطلاعات خود را وارد کنید',
@@ -47,45 +100,58 @@ class RegisterScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  spacing: 12,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InputTextField(label: 'نام کاربری'),
-                    InputTextField(
-                      label: 'ایمیل',
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    InputTextField(
-                      obscureText: true,
-                      label: 'رمز عبور',
-                      maxLines: 1,
-                    ),
-                    Button(
-                      label: 'ثبت نام',
-                      onPressed: () {
-                        context.go('/home');
-                      },
-                      width: double.infinity,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('قبلا ثبت نام کرده اید؟'),
-                        TextButton(
-                          child: Text(
-                            'ورود',
-                            style: TextStyle(
-                              color: AppColors.primary800,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                child: Form(
+                  key: registerFormKey,
+                  child: Column(
+                    children: [
+                      InputTextFormField(
+                        controller: _nameController,
+                        label: 'نام کاربری',
+                        keyboardType: TextInputType.text,
+                        validator: (value) => AppValidator.userName(value, fieldName: 'نام کاربری'),
+                      ),
+                      const SizedBox(height: 12),
+                      InputTextFormField(
+                        controller: _emailController,
+                        label: 'ایمیل',
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) => AppValidator.email(value, fieldName: 'ایمیل'),
+                      ),
+                      const SizedBox(height: 12),
+                      InputTextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        maxLines: 1,
+                        label: 'رمز عبور',
+                        validator: (value) => AppValidator.password(value, fieldName: 'رمز عبور'),
+                      ),
+                      const SizedBox(height: 24),
+                      Button(
+                        label: _isLoading ? 'لطفاً صبر کنید...' : 'ثبت‌نام',
+                        isLoading: _isLoading,
+                        onPressed: _isLoading ? null : _handleRegister,
+                        width: double.infinity,
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('قبلاً ثبت‌نام کرده‌اید؟'),
+                          TextButton(
+                            child: Text(
+                              'ورود',
+                              style: TextStyle(
+                                color: AppColors.primary800,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            onPressed: () => context.go('/login'),
                           ),
-                          onPressed: () => context.go('/login'),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

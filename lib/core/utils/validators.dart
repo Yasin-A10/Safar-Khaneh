@@ -1,4 +1,12 @@
 class AppValidator {
+  static String? userName(String? value, {String fieldName = 'نام کاربری'}) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName نمی‌تواند خالی باشد';
+    }
+
+    return null;
+  }
+
   static String? email(String? value, {String fieldName = 'ایمیل'}) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName نمی‌تواند خالی باشد';
@@ -13,8 +21,8 @@ class AppValidator {
   }
 
   static String? password(String? value, {String fieldName = 'رمز عبور'}) {
-    if (value == null || value.trim().isEmpty) {
-      return '$fieldName نمی‌تواند خالی باشد';
+    if (value == null || value.trim().isEmpty || value.length < 8) {
+      return '$fieldName باید حداقل ۸ کاراکتر داشته باشد';
     }
 
     if (!RegExp(r'[a-z]').hasMatch(value)) {
