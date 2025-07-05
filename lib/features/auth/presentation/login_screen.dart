@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-// import 'package:safar_khaneh/core/network/secure_token_storage.dart';
+import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/features/auth/data/login_sevice.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
@@ -35,13 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
-      // ✅ ذخیره توکن بعد از لاگین
-      final token = response['access'] ?? response['token'];
-      if (token != null) {
-        // await SecureTokenStorage.saveToken(token); // ✅
+      final token = response['access'];
+      final refreshToken = response['refresh'];
+      
+      if (token != null && refreshToken != null) {
+        await TokenStorage.saveTokens(
+          accessToken: token,
+          refreshToken: refreshToken,
+        );
       }
 
-      // ✅ نوتیف موفقیت‌آمیز
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -55,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
 
-        context.go('/home'); // ✅ رفتن به صفحه اصلی
+        context.go('/home');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

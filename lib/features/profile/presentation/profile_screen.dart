@@ -3,11 +3,33 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/features/auth/data/logout_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+
+  final LogoutService logoutService = LogoutService();
+
+  void handleLogout(BuildContext context) async {
+    try {
+      await logoutService.logout();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(e.toString(), textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +336,11 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 16),
                                     OutlinedButton(
-                                      onPressed: () => context.go('/login'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        handleLogout(context);
+                                        context.go('/login');
+                                      },
                                       style: OutlinedButton.styleFrom(
                                         side: BorderSide(
                                           color: AppColors.primary800,

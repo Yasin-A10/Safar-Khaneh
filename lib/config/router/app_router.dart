@@ -151,7 +151,7 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: RoutePaths.profile,
-          builder: (context, state) => const ProfileScreen(),
+          builder: (context, state) => ProfileScreen(),
         ),
       ],
     ),
