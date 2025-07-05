@@ -7,13 +7,23 @@ import 'package:safar_khaneh/features/auth/data/logout_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
 
-class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final LogoutService logoutService = LogoutService();
+
+  bool _isLoading = false;
 
   void handleLogout(BuildContext context) async {
     try {
+      setState(() {
+        _isLoading = true;
+      });
       await logoutService.logout();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -28,6 +38,10 @@ class ProfileScreen extends StatelessWidget {
           duration: const Duration(seconds: 3),
         ),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -335,36 +349,37 @@ class ProfileScreen extends StatelessWidget {
                                       child: const Text('بازگشت'),
                                     ),
                                     SizedBox(width: 16),
-                                    OutlinedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        handleLogout(context);
-                                        context.go('/login');
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        side: BorderSide(
-                                          color: AppColors.primary800,
-                                          width: 2,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                                    _isLoading
+                                        ? const CircularProgressIndicator()
+                                        : OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            handleLogout(context);
+                                            context.go('/login');
+                                          },
+                                          style: OutlinedButton.styleFrom(
+                                            side: BorderSide(
+                                              color: AppColors.primary800,
+                                              width: 2,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 8,
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'بله',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.primary800,
+                                            ),
                                           ),
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 8,
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'بله',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: AppColors.primary800,
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ],
