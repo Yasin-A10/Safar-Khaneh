@@ -39,4 +39,19 @@ class ProfileService {
       throw Exception('خطا در به‌روزرسانی اطلاعات پروفایل: $e');
     }
   }
+
+  Future<void> chargeWallet({required int amount}) async {
+    try {
+      final response = await _client.post(
+        'users/payments/charge/',
+        data: {'amount': amount},
+      );
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception('شارژ کیف پول با خطا مواجه شد');
+      }
+    } catch (e) {
+      throw Exception('خطا در شارژ کیف پول: $e');
+    }
+  }
 }

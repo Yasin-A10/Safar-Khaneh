@@ -231,10 +231,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           onPressed: () {
                             if (selectedProvince != null &&
                                 selectedCity != null) {
-                              Navigator.of(context).pop();
-                              // اینجا هر کاری خواستی انجام بده
-                              print('استان انتخابی: ${selectedProvince!.name}');
-                              print('شهر انتخابی: ${selectedCity!.name}');
+                              
+                              context.pop();
                             }
                           },
                         ),
@@ -267,7 +265,55 @@ class _SearchScreenState extends State<SearchScreen> {
                     IconButton(
                       onPressed: () {
                         _showFilterModal();
-                        // showModalBottomSheet(
+                      },
+                      icon: const Icon(Iconsax.filter),
+                    ),
+                    Expanded(
+                      child: CustomSearchBar(
+                        onSearch: _handleSearch,
+                        hintText: 'جستجو...',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                FutureBuilder(
+                  future: _futureResidences,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    final residences = snapshot.data ?? [];
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: residences.length,
+                        itemBuilder: (context, index) {
+                          final item = residences[index];
+                          return Column(
+                            children: [
+                              SimpleResidenceCard(residence: item),
+                              const SizedBox(height: 16),
+                            ],
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// showModalBottomSheet(
                         //   isScrollControlled: true,
                         //   backgroundColor: AppColors.white,
                         //   context: context,
@@ -447,49 +493,3 @@ class _SearchScreenState extends State<SearchScreen> {
                         //         ),
                         //       ),
                         // );
-                      },
-                      icon: const Icon(Iconsax.filter),
-                    ),
-                    Expanded(
-                      child: CustomSearchBar(
-                        onSearch: _handleSearch,
-                        hintText: 'جستجو...',
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                FutureBuilder(
-                  future: _futureResidences,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-                    final residences = snapshot.data ?? [];
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: residences.length,
-                        itemBuilder: (context, index) {
-                          final item = residences[index];
-                          return Column(
-                            children: [
-                              SimpleResidenceCard(residence: item),
-                              const SizedBox(height: 16),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
