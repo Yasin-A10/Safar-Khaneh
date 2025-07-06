@@ -5,15 +5,11 @@ import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/api/feature_service.dart';
 import 'package:safar_khaneh/data/api/geo_sevices.dart';
-import 'package:safar_khaneh/data/models/city_province_model.dart';
 import 'package:safar_khaneh/data/real-models/feature_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/cards/simple_residence_card.dart';
-import 'package:safar_khaneh/widgets/inputs/drop_down_feild.dart';
-import 'package:safar_khaneh/widgets/inputs/multi_select_dropdown.dart';
-import 'package:safar_khaneh/widgets/inputs/text_field.dart';
 import 'package:safar_khaneh/widgets/search_bar.dart';
 
 class SearchScreen extends StatefulWidget {
