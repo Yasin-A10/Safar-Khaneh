@@ -3,7 +3,6 @@ class AppValidator {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName نمی‌تواند خالی باشد';
     }
-
     return null;
   }
 
@@ -16,7 +15,6 @@ class AppValidator {
     if (!emailRegex.hasMatch(value.trim())) {
       return 'لطفاً یک $fieldName معتبر وارد کنید';
     }
-
     return null;
   }
 
@@ -35,6 +33,23 @@ class AppValidator {
 
     if (!RegExp(r'[0-9]').hasMatch(value)) {
       return '$fieldName باید حداقل یک عدد داشته باشد';
+    }
+    return null;
+  }
+
+  static String? phoneNumber(
+    String? value, {
+    String fieldName = 'شماره همراه',
+  }) {
+    if (value == null ||
+        value.trim().isEmpty ||
+        value.length < 11 ||
+        value.length > 11) {
+      return '$fieldName باید حداقل ۱۱ کاراکتر داشته باشد';
+    }
+
+    if (!value.startsWith('09')) {
+      return '$fieldName باید با ۰۹ شروع شود';
     }
     return null;
   }

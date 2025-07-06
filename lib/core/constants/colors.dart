@@ -47,7 +47,7 @@ class AppColors {
   static const Color success25 = Color(0xFFDDF2EE);
   static const Color success50 = Color(0xFF9DE0D3);
   static const Color success100 = Color(0xFF40C4AA);
-  static const Color success200 = Color(0xFF287F6E);
+  static const Color success200 = Color.fromARGB(255, 32, 161, 71);
   static const Color success300 = Color(0xFF174E43);
 
   // ========= Warning =========
@@ -55,7 +55,7 @@ class AppColors {
   static const Color warning25 = Color(0xFFF9ECCB);
   static const Color warning50 = Color(0xFFFBD982);
   static const Color warning100 = Color(0xFFFFBD4C);
-  static const Color warning200 = Color(0xFF956321);
+  static const Color warning200 = Color.fromARGB(255, 208, 150, 25);
   static const Color warning300 = Color(0xFF5B3D1E);
 
   // ========= Error =========
@@ -63,6 +63,6 @@ class AppColors {
   static const Color error25 = Color(0xFFFADAE1);
   static const Color error50 = Color(0xFFED8296);
   static const Color error100 = Color(0xFFDF1C41);
-  static const Color error200 = Color(0xFF95122B);
+  static const Color error200 = Color.fromARGB(255, 208, 13, 13);
   static const Color error300 = Color(0xFF710E21);
 }

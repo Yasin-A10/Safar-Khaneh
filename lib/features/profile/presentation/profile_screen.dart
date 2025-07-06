@@ -103,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         IconButton(
                           onPressed: () {
-                            context.push('/profile/personal_info');
+                            context.push('/profile/personal_info', extra: snapshot.data);
                           },
                           icon: const Icon(
                             Iconsax.edit,

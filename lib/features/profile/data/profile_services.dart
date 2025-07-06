@@ -16,4 +16,27 @@ class ProfileService {
       throw Exception('خطا در دریافت اطلاعات پروفایل: $e');
     }
   }
+
+  Future<void> updateProfile({
+    required String fullName,
+    required String phoneNumber,
+    required String password,
+  }) async {
+    try {
+      final response = await _client.put(
+        'users/profile/',
+        data: {
+          'full_name': fullName,
+          'phone_number': phoneNumber,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('خطا در به‌روزرسانی پروفایل');
+      }
+    } catch (e) {
+      throw Exception('خطا در به‌روزرسانی اطلاعات پروفایل: $e');
+    }
+  }
 }

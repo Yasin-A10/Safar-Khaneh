@@ -4,6 +4,7 @@ import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/data/models/booked_residence_model.dart';
 import 'package:safar_khaneh/data/models/my_residence_model.dart';
 import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/edit_residence_detail_screen.dart';
@@ -49,7 +50,10 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: RoutePaths.personalInfo,
-      builder: (context, state) => const PersonalInfoScreen(),
+      builder: (context, state) {
+        final profile = state.extra as ProfileModel;
+        return PersonalInfoScreen(profile: profile);
+      }
     ),
 
     GoRoute(
