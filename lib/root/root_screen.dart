@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/network/secure_token_storage.dart';
+import 'package:safar_khaneh/features/auth/data/logout_service.dart';
 
 class RootScreen extends StatefulWidget {
   final Widget child;
@@ -13,8 +15,64 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+  final LogoutService logoutService = LogoutService();
+
   int _currentIndex = 0;
   String _appBarTitle = 'خانه';
+  bool _isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final hasToken = await TokenStorage.hasAccessToken();
+    setState(() {
+      _isLoggedIn = hasToken;
+    });
+  }
+
+  void handleLogout() async {
+    try {
+      await logoutService.logout();
+      if (mounted) {
+        context.pop();
+        setState(() {
+          _isLoggedIn = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'خروج موفقیت آمیز بود',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.success200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(e.toString(), textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 
   void _onTap(int index) {
     setState(() {
@@ -104,82 +162,94 @@ class _RootScreenState extends State<RootScreen> {
           title: Text(_appBarTitle),
           actions: [
             if (_currentIndex == 0)
-              IconButton(
-                icon: const Icon(Iconsax.logout),
-                onPressed:
-                    () => showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            title: const Text(
-                              'آیا از خروج خود مطمئن هستید؟',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
+              if (_isLoggedIn)
+                IconButton(
+                  icon: const Icon(Iconsax.logout),
+                  onPressed:
+                      () => showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                            ),
-                            actions: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () => context.pop(),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.error200,
-                                      foregroundColor: AppColors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      textStyle: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'Vazir',
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    child: const Text('بازگشت'),
-                                  ),
-                                  SizedBox(width: 16),
-                                  OutlinedButton(
-                                    onPressed: () => context.go('/login'),
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: AppColors.primary800,
-                                        width: 2,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8,
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'بله',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.primary800,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              title: const Text(
+                                'آیا از خروج خود مطمئن هستید؟',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
+                                ),
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-              )
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () => context.pop(),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.error200,
+                                        foregroundColor: AppColors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        textStyle: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'Vazir',
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      child: const Text('بازگشت'),
+                                    ),
+                                    SizedBox(width: 16),
+                                    OutlinedButton(
+                                      onPressed: () {
+                                        handleLogout();
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          color: AppColors.primary800,
+                                          width: 2,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'بله',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.primary800,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                )
+              else
+                IconButton(
+                  icon: const Icon(Iconsax.add),
+                  onPressed: () => context.go('/login'),
+                )
             else
               IconButton(
                 icon: const Icon(Iconsax.arrow_left),

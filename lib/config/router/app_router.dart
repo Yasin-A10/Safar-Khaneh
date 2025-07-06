@@ -169,7 +169,7 @@ final GoRouter appRouter = GoRouter(
     final isPublicRoute = publicRoutes.contains(state.matchedLocation);
 
     if (!isLoggedIn && !isPublicRoute) return '/login';
-    if (isLoggedIn && state.matchedLocation == '/login') return '/home';
+    if (isLoggedIn && state.matchedLocation == '/login') return '/login';
     return null;
   },
 
