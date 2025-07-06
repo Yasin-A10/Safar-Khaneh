@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/data/models/booked_residence_model.dart';
 import 'package:safar_khaneh/data/models/my_residence_model.dart';
 import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
@@ -28,7 +30,12 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/search/presentation/search_screen.dart';
 import '../../features/residence/presentation/residence_detail_screen.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+final List<String> publicRoutes = ['/login', '/register', '/home', '/search'];
+
 final GoRouter appRouter = GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: '/home',
   routes: [
     GoRoute(
@@ -110,7 +117,7 @@ final GoRouter appRouter = GoRouter(
         );
       },
     ),
-    
+
     GoRoute(
       path: RoutePaths.transaction,
       builder: (context, state) => const TransactionScreen(),
@@ -156,5 +163,15 @@ final GoRouter appRouter = GoRouter(
       ],
     ),
   ],
+
+  redirect: (context, state) async {
+    final isLoggedIn = await TokenStorage.hasAccessToken();
+    final isPublicRoute = publicRoutes.contains(state.matchedLocation);
+
+    if (!isLoggedIn && !isPublicRoute) return '/login';
+    if (isLoggedIn && state.matchedLocation == '/login') return '/home';
+    return null;
+  },
+
   errorBuilder: (context, state) => const NotFoundScreen(),
 );

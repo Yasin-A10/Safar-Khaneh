@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 
 class AuthApiClient {
@@ -13,40 +15,89 @@ class AuthApiClient {
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {
+          // 'Authorization': 'Bearer ${TokenStorage.getRefreshToken()}',
           'Accept': 'application/json',
         },
       ),
     );
 
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await TokenStorage.getAccessToken();
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        return handler.next(options);
-      },
-      onError: (DioException error, handler) async {
-        // اگر توکن منقضی شده بود
-        if (error.response?.statusCode == 401) {
-          final refreshToken = await TokenStorage.getRefreshToken();
-          if (refreshToken != null) {
-            try {
-              final newTokens = await _refreshToken(refreshToken);
-              await TokenStorage.saveTokens(
-                accessToken: newTokens['access'],
-                refreshToken: newTokens['refresh'],
-              );
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await TokenStorage.getAccessToken();
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+        // onError: (DioException error, handler) async {
+        //   // اگر توکن منقضی شده بود
+        //   if (error.response?.statusCode == 401) {
+        //     final refreshToken = await TokenStorage.getRefreshToken();
+        //     if (refreshToken != null) {
+        //       try {
+        //         final newTokens = await _refreshToken(refreshToken);
+        //         await TokenStorage.saveTokens(
+        //           accessToken: newTokens['access'],
+        //           refreshToken: newTokens['refresh'],
+        //         );
 
-              // درخواست قبلی را با توکن جدید تکرار کن
-              final newRequest = error.requestOptions;
-              newRequest.headers['Authorization'] =
-                  'Bearer ${newTokens['access']}';
+        //         // درخواست قبلی را با توکن جدید تکرار کن
+        //         final newRequest = error.requestOptions;
+        //         newRequest.headers['Authorization'] =
+        //             'Bearer ${newTokens['access']}';
 
-              final cloneReq = await dio.fetch(newRequest);
-              return handler.resolve(cloneReq);
-            } catch (e) {
-              // در صورت شکست، لاگ‌اوت یا ارور
+        //         final cloneReq = await dio.fetch(newRequest);
+        //         return handler.resolve(cloneReq);
+        //       } catch (e) {
+        //         // در صورت شکست، لاگ‌اوت یا ارور
+        //         return handler.reject(
+        //           DioException(
+        //             requestOptions: error.requestOptions,
+        //             message: 'نشست شما منقضی شده است. لطفاً دوباره وارد شوید.',
+        //           ),
+        //         );
+        //       }
+        //     }
+        //   }
+
+        //   return handler.next(error);
+        // },
+        onError: (DioException error, handler) async {
+          if (error.response?.statusCode == 401) {
+            final refreshToken = await TokenStorage.getRefreshToken();
+            if (refreshToken != null) {
+              try {
+                final newTokens = await _refreshToken(refreshToken);
+                await TokenStorage.saveTokens(
+                  accessToken: newTokens['access'],
+                  refreshToken: newTokens['refresh'],
+                );
+
+                final newRequest = error.requestOptions;
+                newRequest.headers['Authorization'] =
+                    'Bearer ${newTokens['access']}';
+                final cloneReq = await dio.fetch(newRequest);
+                return handler.resolve(cloneReq);
+              } catch (e) {
+                // 👇 اینجا اضافه کن
+                await TokenStorage.clearTokens();
+
+                // برای ریدایرکت به صفحه لاگین
+                GoRouter.of(navigatorKey.currentContext!).go('/login');
+
+                return handler.reject(
+                  DioException(
+                    requestOptions: error.requestOptions,
+                    message: 'نشست شما منقضی شده است. لطفاً دوباره وارد شوید.',
+                  ),
+                );
+              }
+            } else {
+              // اگر رفرش توکن هم نداشتیم
+              await TokenStorage.clearTokens();
+              GoRouter.of(navigatorKey.currentContext!).go('/login');
+
               return handler.reject(
                 DioException(
                   requestOptions: error.requestOptions,
@@ -55,11 +106,11 @@ class AuthApiClient {
               );
             }
           }
-        }
 
-        return handler.next(error);
-      },
-    ));
+          return handler.next(error);
+        },
+      ),
+    );
 
     return AuthApiClient._internal(dio);
   }
@@ -68,10 +119,13 @@ class AuthApiClient {
     final dio = Dio();
     final response = await dio.post(
       'http://127.0.0.1:8000/api/auth/refresh_token/',
-      data: {'refresh': refreshToken},
-      options: Options(headers: {
-        'Accept': 'application/json',
-      }),
+      data: {'refresh_token': refreshToken},
+      options: Options(
+        headers: {
+          // 'Authorization': 'Bearer $refreshToken',
+          'Accept': 'application/json',
+        },
+      ),
     );
 
     if (response.statusCode == 200) {
