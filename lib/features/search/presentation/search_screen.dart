@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/data/api/feature_service.dart';
 import 'package:safar_khaneh/data/api/geo_sevices.dart';
 import 'package:safar_khaneh/data/models/city_province_model.dart';
+import 'package:safar_khaneh/data/real-models/feature_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
@@ -38,13 +41,40 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  Province? selectedProvince;
-  City? selectedCity;
+  void _handleFilter(
+    int? provinceId,
+    int? cityId,
+    int? minPrice,
+    int? maxPrice,
+    List<int>? features,
+  ) async {
+    final result = await _residenceService.fetchResidences(
+      provinceId: provinceId,
+      cityId: cityId,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      features: features,
+    );
+    setState(() {
+      _futureResidences = Future.value(result);
+    });
+  }
+
+  Province? _selectedProvince;
+  City? _selectedCity;
   List<Province> provinces = [];
   List<City> cities = [];
+  RangeValues _priceRange = const RangeValues(0, 1000000);
+  final List<int> _selectedFeatures = [];
+  List<FeatureModel> features = [];
 
   void _showFilterModal() async {
     final geoService = GeoService();
+    final featureService = FeatureService();
+
+    if (features.isEmpty) {
+      features = await featureService.fetchFeatures();
+    }
 
     // اگر لیست استان‌ها خالیه، یکبار واکشی کن
     if (provinces.isEmpty) {
@@ -56,6 +86,7 @@ class _SearchScreenState extends State<SearchScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -63,7 +94,12 @@ class _SearchScreenState extends State<SearchScreen> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(
+                top: 0,
+                bottom: 16,
+                left: 16,
+                right: 16,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -71,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     'فیلترها',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 32),
                   Row(
                     children: [
                       Expanded(
@@ -96,8 +132,8 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                               dropdownColor: Colors.white,
                               value:
-                                  provinces.contains(selectedProvince)
-                                      ? selectedProvince
+                                  provinces.contains(_selectedProvince)
+                                      ? _selectedProvince
                                       : null,
                               hint: const Text(
                                 'انتخاب استان',
@@ -123,8 +159,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                   }).toList(),
                               onChanged: (Province? newProvince) async {
                                 setModalState(() {
-                                  selectedProvince = newProvince;
-                                  selectedCity = null;
+                                  _selectedProvince = newProvince;
+                                  _selectedCity = null;
                                   cities = [];
                                 });
 
@@ -163,8 +199,8 @@ class _SearchScreenState extends State<SearchScreen> {
                               ),
                               dropdownColor: Colors.white,
                               value:
-                                  cities.contains(selectedCity)
-                                      ? selectedCity
+                                  cities.contains(_selectedCity)
+                                      ? _selectedCity
                                       : null,
                               hint: const Text(
                                 'انتخاب شهر',
@@ -190,13 +226,92 @@ class _SearchScreenState extends State<SearchScreen> {
                                   }).toList(),
                               onChanged: (City? newCity) {
                                 setModalState(() {
-                                  selectedCity = newCity;
+                                  _selectedCity = newCity;
                                 });
                               },
                             ),
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'محدوده قیمت',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      RangeSlider(
+                        values: _priceRange,
+                        onChanged: (RangeValues values) {
+                          setModalState(() {
+                            _priceRange = values;
+                          });
+                        },
+                        min: 0,
+                        max: 1000000,
+                        activeColor: AppColors.primary800,
+                        inactiveColor: AppColors.grey300,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'از ${formatNumberToPersian(_priceRange.start.toInt())} تومان',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            'تا ${formatNumberToPersian(_priceRange.end.toInt())} تومان',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'انتخاب امکانات',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ...features.map((feature) {
+                        return CheckboxListTile(
+                          value: _selectedFeatures.contains(feature.id),
+                          title: Text(
+                            feature.name,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          onChanged: (bool? isChecked) {
+                            setModalState(() {
+                              if (isChecked == true) {
+                                _selectedFeatures.add(feature.id);
+                              } else {
+                                _selectedFeatures.remove(feature.id);
+                              }
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                        );
+                      }).toList(),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -229,9 +344,15 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Button(
                           label: 'اعمال فیلتر',
                           onPressed: () {
-                            if (selectedProvince != null &&
-                                selectedCity != null) {
-                              
+                            if (_selectedProvince != null &&
+                                _selectedCity != null) {
+                              _handleFilter(
+                                _selectedProvince?.id,
+                                _selectedCity?.id,
+                                _priceRange.start.toInt(),
+                                _priceRange.end.toInt(),
+                                _selectedFeatures,
+                              );
                               context.pop();
                             }
                           },
@@ -285,6 +406,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     }
                     if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('هیچ اقامتگاهی یافت نشد'),
+                      );
                     }
                     final residences = snapshot.data ?? [];
                     return Expanded(

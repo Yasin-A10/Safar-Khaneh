@@ -5,11 +5,18 @@ import 'package:safar_khaneh/features/search/data/residence_model.dart';
 class ResidenceService {
   final ApiClient _apiClient = ApiClient();
 
-  Future<List<ResidenceModel>> fetchResidences({String? query}) async {
+  Future<List<ResidenceModel>> fetchResidences({String? query, int? provinceId, int? cityId, int? minPrice, int? maxPrice, List<int>? features}) async {
     try {
       final Response response = await _apiClient.get(
         'residences/',
-        queryParams: query != null ? {'q': query} : null,
+        queryParams: {
+          'q': query,
+          'province_id': provinceId,
+          'city_id': cityId,
+          'min_price': minPrice,
+          'max_price': maxPrice,
+          'features': features,
+        },
       );
 
       if (response.statusCode == 200) {
