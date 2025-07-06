@@ -227,6 +227,9 @@ class _RequestToAddResidenceScreenState
                               color: Colors.white,
                             ),
                             child: DropdownButtonFormField<Province>(
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
                               isExpanded: true,
                               validator: (value) {
                                 return AppValidator.province(value);
@@ -296,6 +299,9 @@ class _RequestToAddResidenceScreenState
                             ),
                             child: DropdownButtonFormField<City>(
                               isExpanded: true,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
                               validator: (value) {
                                 return AppValidator.city(value);
                               },
@@ -340,41 +346,59 @@ class _RequestToAddResidenceScreenState
                       ],
                     ),
                     const SizedBox(height: 16),
-                    DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      validator: (value) {
-                        return AppValidator.type(value);
-                      },
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                      dropdownColor: Colors.white,
-                      value: types.contains(selectedType) ? selectedType : null,
-                      hint: const Text(
-                        'انتخاب نوع',
-                        style: TextStyle(
-                          fontFamily: 'Vazir',
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 0,
                       ),
-                      items:
-                          types.map((type) {
-                            return DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(
-                                type == 'villa' ? 'ویلا' : '',
-                                style: const TextStyle(
-                                  fontFamily: 'Vazir',
-                                  fontSize: 14,
-                                  color: Colors.black,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.grey600,
+                          width: 1.5,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.white,
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) {
+                          return AppValidator.type(value);
+                        },
+                        icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                        dropdownColor: Colors.white,
+                        value:
+                            types.contains(selectedType) ? selectedType : null,
+                        hint: const Text(
+                          'انتخاب نوع',
+                          style: TextStyle(
+                            fontFamily: 'Vazir',
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        items:
+                            types.map((type) {
+                              return DropdownMenuItem<String>(
+                                value: type,
+                                child: Text(
+                                  type == 'villa' ? 'ویلا' : '',
+                                  style: const TextStyle(
+                                    fontFamily: 'Vazir',
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
-                      onChanged: (String? newType) {
-                        setState(() {
-                          selectedType = newType;
-                        });
-                      },
+                              );
+                            }).toList(),
+                        onChanged: (String? newType) {
+                          setState(() {
+                            selectedType = newType;
+                          });
+                        },
+                      ),
                     ),
 
                     const SizedBox(height: 16),
