@@ -5,7 +5,14 @@ import 'package:safar_khaneh/features/search/data/residence_model.dart';
 class ResidenceService {
   final ApiClient _apiClient = ApiClient();
 
-  Future<List<ResidenceModel>> fetchResidences({String? query, int? provinceId, int? cityId, int? minPrice, int? maxPrice, List<int>? features}) async {
+  Future<List<ResidenceModel>> fetchResidences({
+    String? query,
+    int? provinceId,
+    int? cityId,
+    int? minPrice,
+    int? maxPrice,
+    List<int>? features,
+  }) async {
     try {
       final Response response = await _apiClient.get(
         'residences/',
@@ -26,8 +33,7 @@ class ResidenceService {
         throw Exception('خطا در دریافت اقامتگاه‌ها');
       }
     } catch (e) {
-      print('Error fetching residences: $e');
-      rethrow;
+      throw Exception('خطای ارتباط با سرور: $e');
     }
   }
 }
