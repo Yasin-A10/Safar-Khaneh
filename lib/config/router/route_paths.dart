@@ -26,4 +26,7 @@ class RoutePaths {
   static const String checkout = '/residence/:id/checkout';
 
   static const String requestToAddResidence = '/profile/request_to_add_residence';
+
+  static const String paymentSuccess = '/payment-success';
+  static const String paymentFailed = '/payment-failed';
 }

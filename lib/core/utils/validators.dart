@@ -76,4 +76,20 @@ class AppValidator {
     }
     return null;
   }
+
+  static String? price(String? value, {String fieldName = 'مبلغ'}) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName نمی‌تواند خالی باشد';
+    }
+
+    final price = int.tryParse(value.replaceAll(',', '').trim());
+    if (price == null) {
+      return '$fieldName معتبر نیست';
+    }
+
+    if (price < 1000) {
+      return '$fieldName باید حداقل ۱۰۰۰ تومان باشد';
+    }
+    return null;
+  }
 }

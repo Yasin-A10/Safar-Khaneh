@@ -3,11 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/features/auth/data/logout_service.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/data/profile_services.dart';
+import 'package:safar_khaneh/features/profile/data/wallet_charge_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
-import 'package:safar_khaneh/widgets/inputs/text_field.dart';
+import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,8 +20,12 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final GlobalKey<FormState> _walletChargeFormKey = GlobalKey<FormState>();
   final LogoutService logoutService = LogoutService();
   final ProfileService profileService = ProfileService();
+  final ChargeService chargeService = ChargeService();
+
+  final TextEditingController _walletChargeController = TextEditingController();
 
   late Future<ProfileModel> _futureProfile;
 
@@ -29,8 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   bool _isLoading = false;
+  bool _isLoadingCharge = false;
 
-  void handleLogout() async {
+  void handleLogout(context) async {
     try {
       setState(() {
         _isLoading = true;
@@ -53,6 +61,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void _handleChargeWallet(context) async {
+    if (!_walletChargeFormKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoadingCharge = true;
+    });
+
+    try {
+      final url = await chargeService.chargeAccount(
+        amount: int.parse(_walletChargeController.text),
+      );
+
+      final canLaunch = await canLaunchUrlString(url);
+      if (canLaunch) {
+        await launchUrlString(url, mode: LaunchMode.externalApplication);
+      } else {
+        throw Exception('امکان باز کردن لینک پرداخت وجود ندارد');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(e.toString(), textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingCharge = false;
+        });
+      }
     }
   }
 
@@ -103,7 +151,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         IconButton(
                           onPressed: () {
-                            context.push('/profile/personal_info', extra: snapshot.data);
+                            context.push(
+                              '/profile/personal_info',
+                              extra: snapshot.data,
+                            );
                           },
                           icon: const Icon(
                             Iconsax.edit,
@@ -194,10 +245,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ],
                                               ),
                                               const SizedBox(height: 12),
-                                              InputTextField(
-                                                label: 'مبلغ شارژ',
-                                                keyboardType:
-                                                    TextInputType.number,
+                                              Form(
+                                                key: _walletChargeFormKey,
+                                                child: InputTextFormField(
+                                                  label: 'مبلغ شارژ',
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  validator: (value) {
+                                                    return AppValidator
+                                                        .price(
+                                                      value,
+                                                    );
+                                                  },
+                                                  controller:
+                                                      _walletChargeController,
+                                                ),
                                               ),
                                               const SizedBox(height: 24),
                                               Row(
@@ -241,7 +303,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   Expanded(
                                                     child: Button(
                                                       label: 'پرداخت',
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        _handleChargeWallet(
+                                                          context,
+                                                        );
+                                                      },
+                                                      isLoading:
+                                                          _isLoadingCharge,
+                                                      enabled:
+                                                          !_isLoadingCharge,
                                                     ),
                                                   ),
                                                 ],
@@ -401,7 +471,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           : OutlinedButton(
                                             onPressed: () {
                                               Navigator.of(context).pop();
-                                              handleLogout();
+                                              handleLogout(context);
                                               if (mounted) context.go('/login');
                                             },
                                             style: OutlinedButton.styleFrom(

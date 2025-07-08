@@ -4,6 +4,8 @@ import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/data/models/booked_residence_model.dart';
 import 'package:safar_khaneh/data/models/my_residence_model.dart';
 import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/payment/presentation/payment_failed_screen.dart';
+import 'package:safar_khaneh/features/payment/presentation/payment_success_screen.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
@@ -143,6 +145,15 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.requestToAddResidence,
       builder: (context, state) => const RequestToAddResidenceScreen(),
+    ),
+
+    GoRoute(
+      path: RoutePaths.paymentSuccess,
+      builder: (context, state) => const PaymentSuccessScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.paymentFailed,
+      builder: (context, state) => const PaymentFailedScreen(),
     ),
 
     ShellRoute(
