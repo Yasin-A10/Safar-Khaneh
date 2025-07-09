@@ -17,6 +17,7 @@ class ResidenceModel {
   String? imageUrl;
   Location? location;
   String? createdAt;
+  Owner? owner;
   List<FeatureModel>? features;
   bool? isActive;
 
@@ -37,6 +38,7 @@ class ResidenceModel {
     this.imageUrl,
     this.location,
     this.createdAt,
+    this.owner,
     this.features,
     this.isActive,
   });
@@ -59,6 +61,7 @@ class ResidenceModel {
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;
     createdAt = json['created_at'];
+    owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     if (json['features'] != null) {
       features = <FeatureModel>[];
       json['features'].forEach((v) {
@@ -88,6 +91,9 @@ class ResidenceModel {
       data['location'] = this.location!.toJson();
     }
     data['created_at'] = this.createdAt;
+    if (this.owner != null) {
+      data['owner'] = this.owner!.toJson();
+    }
     if (this.features != null) {
       data['features'] = this.features!.map((v) => v.toJson()).toList();
     }
@@ -161,9 +167,8 @@ class City {
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    province = json['province'] != null
-        ? Province.fromJson(json['province'])
-        : null;
+    province =
+        json['province'] != null ? Province.fromJson(json['province']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -191,6 +196,27 @@ class City {
   }
 }
 
+class Owner {
+  int? id;
+  String? fullName;
+  String? phoneNumber;
+
+  Owner({this.id, this.fullName, this.phoneNumber});
+
+  Owner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    fullName = json['full_name'];
+    phoneNumber = json['phone_number'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['full_name'] = this.fullName;
+    data['phone_number'] = this.phoneNumber;
+    return data;
+  }
+}
 
 // class Province {
 //   int? id;

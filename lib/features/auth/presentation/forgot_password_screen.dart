@@ -1,55 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/login_sevice.dart';
+import 'package:safar_khaneh/features/auth/data/forgot_password_service.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final GlobalKey<FormState> forgotPasswordFormKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  final LoginService _loginService = LoginService();
+  final ForgetPasswordService _forgotPasswordService = ForgetPasswordService();
 
-  void _handleLogin() async {
-    if (!loginFormKey.currentState!.validate()) return;
+  void _handleForgotPassword(context) async {
+    if (!forgotPasswordFormKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final response = await _loginService.login(
+      final response = await _forgotPasswordService.forgotPassword(
         email: _emailController.text.trim(),
-        password: _passwordController.text,
       );
 
-      final token = response['access'];
-      final refreshToken = response['refresh'];
-      
-      if (token != null && refreshToken != null) {
-        await TokenStorage.saveTokens(
-          accessToken: token,
-          refreshToken: refreshToken,
-        );
-      }
-
-      if (mounted) {
+      if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              'ورود با موفقیت انجام شد',
+              'ایمیل با موفقیت تایید شد. لطفا رمز جدید را ثبت کنید',
               textDirection: TextDirection.rtl,
             ),
             backgroundColor: Colors.green,
@@ -57,8 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
             duration: const Duration(seconds: 2),
           ),
         );
-
-        context.go('/home');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -117,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   Form(
-                    key: loginFormKey,
+                    key: forgotPasswordFormKey,
                     child: Column(
                       children: [
                         InputTextFormField(
@@ -126,63 +109,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) => AppValidator.email(value),
                         ),
-                        const SizedBox(height: 12),
-                        InputTextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          label: 'رمز عبور',
-                          maxLines: 1,
-                          validator: (value) => AppValidator.password(value),
-                        ),
                         const SizedBox(height: 24),
                         Button(
-                          label: 'ورود',
-                          onPressed: _handleLogin,
+                          label: 'تایید',
+                          onPressed: () {
+                            _handleForgotPassword(context);
+                          },
                           width: double.infinity,
                           enabled: !_isLoading,
                           isLoading: _isLoading,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'حساب کاربری ندارید؟',
-                        style: TextStyle(color: AppColors.grey500),
-                      ),
-                      TextButton(
-                        onPressed: () => context.go('/register'),
-                        child: Text(
-                          'ثبت نام',
-                          style: TextStyle(
-                            color: AppColors.primary800,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'رمز عبور را فراموش کرده اید؟',
-                        style: TextStyle(color: AppColors.grey500),
-                      ),
-                      TextButton(
-                        onPressed: () => context.go('/forgot-password'),
-                        child: Text(
-                          'بازیابی رمز عبور',
-                          style: TextStyle(
-                            color: AppColors.primary800,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -193,3 +131,5 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+

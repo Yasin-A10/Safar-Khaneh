@@ -288,15 +288,16 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                             ),
                                           ],
                                         ),
-                                        // const SizedBox(width: 8),
-                                        // Text(
-                                        //   widget.residence.manager!,
-                                        //   style: TextStyle(
-                                        //     color: AppColors.grey800,
-                                        //     fontSize: 16,
-                                        //     fontWeight: FontWeight.w500,
-                                        //   ),
-                                        // ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          widget.residence.owner?.fullName ??
+                                              'نامشخص',
+                                          style: TextStyle(
+                                            color: AppColors.grey800,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 16),
@@ -323,17 +324,20 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                           ],
                                         ),
                                         const SizedBox(width: 8),
-                                        // Text(
-                                        //   formatNumberToPersianWithoutSeparator(
-                                        //     widget.residence.phoneNumber
-                                        //         .toString(),
-                                        //   ),
-                                        //   style: TextStyle(
-                                        //     color: AppColors.grey800,
-                                        //     fontSize: 16,
-                                        //     fontWeight: FontWeight.w500,
-                                        //   ),
-                                        // ),
+                                        Text(
+                                          formatNumberToPersianWithoutSeparator(
+                                            widget
+                                                    .residence
+                                                    .owner
+                                                    ?.phoneNumber ??
+                                                'نامشخص',
+                                          ),
+                                          style: TextStyle(
+                                            color: AppColors.grey800,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 16),

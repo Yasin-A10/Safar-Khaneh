@@ -4,6 +4,9 @@ import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/data/models/booked_residence_model.dart';
 import 'package:safar_khaneh/data/models/my_residence_model.dart';
 import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/auth/presentation/forgot_password_screen.dart';
+import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.dart';
+
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_success_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/verify_email_screen.dart';
@@ -36,7 +39,7 @@ import '../../features/residence/presentation/residence_detail_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final List<String> publicRoutes = ['/login', '/register', '/home', '/search'];
+final List<String> publicRoutes = ['/login', '/register', '/home', '/search', '/forgot-password', '/reset-password', '/verify-email'];
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: navigatorKey,
@@ -159,6 +162,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.verifyEmail,
       builder: (context, state) => const VerifyEmailScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.forgotPassword,
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.resetPassword,
+      builder: (context, state) => const ResetPasswordScreen(),
     ),
 
     ShellRoute(

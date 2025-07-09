@@ -1,55 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/login_sevice.dart';
+import 'package:safar_khaneh/features/auth/data/reset_password_servise.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/button.dart';
+import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final GlobalKey<FormState> resetPasswordFormKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  final LoginService _loginService = LoginService();
+  final ResetPasswordService _resetPasswordService = ResetPasswordService();
 
-  void _handleLogin() async {
-    if (!loginFormKey.currentState!.validate()) return;
+  void _handleResetPassword(context) async {
+    if (!resetPasswordFormKey.currentState!.validate()) return;
 
     setState(() {
       _isLoading = true;
     });
 
+    final resetToken = await TokenStorage.getResetToken();
+
     try {
-      final response = await _loginService.login(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      final response = await _resetPasswordService.resetPassword(
+        token: resetToken!,
+        newPassword: _passwordController.text.trim(),
       );
 
-      final token = response['access'];
-      final refreshToken = response['refresh'];
-      
-      if (token != null && refreshToken != null) {
-        await TokenStorage.saveTokens(
-          accessToken: token,
-          refreshToken: refreshToken,
-        );
-      }
-
-      if (mounted) {
+      if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              'ورود با موفقیت انجام شد',
+              'رمز با موفقیت تغییر یافت',
               textDirection: TextDirection.rtl,
             ),
             backgroundColor: Colors.green,
@@ -57,8 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
             duration: const Duration(seconds: 2),
           ),
         );
-
-        context.go('/home');
+        TokenStorage.clearResetToken();
+        GoRouter.of(navigatorKey.currentContext!).go('/login');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -117,72 +108,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   Form(
-                    key: loginFormKey,
+                    key: resetPasswordFormKey,
                     child: Column(
                       children: [
                         InputTextFormField(
-                          controller: _emailController,
-                          label: 'ایمیل',
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) => AppValidator.email(value),
-                        ),
-                        const SizedBox(height: 12),
-                        InputTextFormField(
                           controller: _passwordController,
-                          obscureText: true,
-                          label: 'رمز عبور',
-                          maxLines: 1,
+                          label: 'رمز جدید',
+                          keyboardType: TextInputType.visiblePassword,
                           validator: (value) => AppValidator.password(value),
                         ),
                         const SizedBox(height: 24),
                         Button(
-                          label: 'ورود',
-                          onPressed: _handleLogin,
+                          label: 'تغییر رمز',
+                          onPressed: () {
+                            _handleResetPassword(context);
+                          },
                           width: double.infinity,
                           enabled: !_isLoading,
                           isLoading: _isLoading,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'حساب کاربری ندارید؟',
-                        style: TextStyle(color: AppColors.grey500),
-                      ),
-                      TextButton(
-                        onPressed: () => context.go('/register'),
-                        child: Text(
-                          'ثبت نام',
-                          style: TextStyle(
-                            color: AppColors.primary800,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'رمز عبور را فراموش کرده اید؟',
-                        style: TextStyle(color: AppColors.grey500),
-                      ),
-                      TextButton(
-                        onPressed: () => context.go('/forgot-password'),
-                        child: Text(
-                          'بازیابی رمز عبور',
-                          style: TextStyle(
-                            color: AppColors.primary800,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
