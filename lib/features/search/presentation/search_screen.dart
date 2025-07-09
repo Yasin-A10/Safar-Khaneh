@@ -43,6 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
     int? minPrice,
     int? maxPrice,
     List<int>? features,
+    bool? isActive,
   ) async {
     final result = await _residenceService.fetchResidences(
       provinceId: provinceId,
@@ -50,6 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
       minPrice: minPrice,
       maxPrice: maxPrice,
       features: features,
+      isActive: isActive == true ? true : null,
     );
     setState(() {
       _futureResidences = Future.value(result);
@@ -63,6 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
   RangeValues _priceRange = const RangeValues(0, 1000000);
   final List<int> _selectedFeatures = [];
   List<FeatureModel> features = [];
+  bool _isActive = false;
 
   void _showFilterModal() async {
     final geoService = GeoService();
@@ -101,7 +104,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: [
                   const Text(
                     'فیلترها',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary800,
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Row(
@@ -306,8 +313,35 @@ class _SearchScreenState extends State<SearchScreen> {
                           controlAffinity: ListTileControlAffinity.leading,
                           contentPadding: EdgeInsets.zero,
                           dense: true,
+                          visualDensity: const VisualDensity(
+                            horizontal: -4,
+                            vertical: -4,
+                          ),
                         );
                       }),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Text(
+                        'فقط اقامتگاههای فعال',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      const Spacer(),
+                      Transform.scale(
+                        scale: 0.85,
+                        child: Switch(
+                          value: _isActive,
+                          onChanged: (bool? value) {
+                            setModalState(() {
+                              _isActive = value ?? false;
+                            });
+                          },
+                          inactiveThumbColor: AppColors.grey400,
+                          activeColor: AppColors.primary800,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -340,17 +374,15 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Button(
                           label: 'اعمال فیلتر',
                           onPressed: () {
-                            if (_selectedProvince != null &&
-                                _selectedCity != null) {
-                              _handleFilter(
-                                _selectedProvince?.id,
-                                _selectedCity?.id,
-                                _priceRange.start.toInt(),
-                                _priceRange.end.toInt(),
-                                _selectedFeatures,
-                              );
-                              context.pop();
-                            }
+                            _handleFilter(
+                              _selectedProvince?.id,
+                              _selectedCity?.id,
+                              _priceRange.start.toInt(),
+                              _priceRange.end.toInt(),
+                              _selectedFeatures,
+                              _isActive,
+                            );
+                            context.pop();
                           },
                         ),
                       ),

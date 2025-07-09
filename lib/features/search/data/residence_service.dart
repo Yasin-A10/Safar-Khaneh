@@ -12,6 +12,7 @@ class ResidenceService {
     int? minPrice,
     int? maxPrice,
     List<int>? features,
+    bool? isActive,
   }) async {
     try {
       final Response response = await _apiClient.get(
@@ -23,6 +24,7 @@ class ResidenceService {
           'min_price': minPrice,
           'max_price': maxPrice,
           'features': features,
+          'is_active': isActive,
         },
       );
 
