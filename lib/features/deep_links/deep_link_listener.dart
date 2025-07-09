@@ -2,6 +2,7 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/config/router/app_router.dart';
+import 'package:safar_khaneh/features/auth/data/verify_email.dart';
 
 class DeepLinkListener extends StatefulWidget {
   const DeepLinkListener({super.key, required this.child});
@@ -12,6 +13,7 @@ class DeepLinkListener extends StatefulWidget {
 }
 
 class _DeepLinkListenerState extends State<DeepLinkListener> {
+  final VerifyEmailService _verifyEmailService = VerifyEmailService();
   @override
   void initState() {
     final appLinks = AppLinks();
@@ -23,6 +25,22 @@ class _DeepLinkListenerState extends State<DeepLinkListener> {
             GoRouter.of(navigatorKey.currentContext!).go('/payment-success');
           } else {
             GoRouter.of(navigatorKey.currentContext!).go('/payment-failed');
+          }
+        }
+        else if (uri.path == '/verify-email' && mounted) {
+          final token = uri.queryParameters['token'];
+          if (token != null) {
+            _verifyEmailService.verifyEmail(token: token).then((value) {
+              if (value['status'] == 200 || value['status'] == 201) {
+                GoRouter.of(navigatorKey.currentContext!).go('/verify-email');
+              } else {
+                return;
+              }
+            });
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('خطا در تایید ایمیل')),
+            );
           }
         }
       },

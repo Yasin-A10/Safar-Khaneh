@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/config/theme/app_theme.dart';
-import 'package:safar_khaneh/features/payment/deep_link_listener.dart';
+import 'package:safar_khaneh/features/deep_links/deep_link_listener.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); // for app_links

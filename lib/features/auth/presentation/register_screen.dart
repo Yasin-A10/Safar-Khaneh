@@ -40,7 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('ثبت‌نام با موفقیت انجام شد'),),
         );
-        context.go('/login'); // یا '/home' بسته به مسیر بعد از ثبت‌نام
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

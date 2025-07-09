@@ -29,4 +29,5 @@ class RoutePaths {
 
   static const String paymentSuccess = '/payment-success';
   static const String paymentFailed = '/payment-failed';
+  static const String verifyEmail = '/verify-email';
 }
