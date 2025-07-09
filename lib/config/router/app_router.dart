@@ -83,7 +83,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.menuResidence,
       builder: (context, state) {
-        final residence = state.extra as MyResidenceModel;
+        final residence = state.extra as ResidenceModel;
         return MenuResidence(residence: residence);
       },
     ),
@@ -102,7 +102,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.myResidenceDetail,
       builder: (context, state) {
-        final residence = state.extra as MyResidenceModel;
+        final residence = state.extra as ResidenceModel;
         return EditResidenceDetailScreen(residence: residence);
       },
     ),

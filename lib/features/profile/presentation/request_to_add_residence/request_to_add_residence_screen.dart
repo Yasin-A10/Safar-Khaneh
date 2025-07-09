@@ -422,8 +422,8 @@ class _RequestToAddResidenceScreenState
                     ),
                     const SizedBox(height: 16),
                     MapPicker(
-                      initialLatitude: 35.6892,
-                      initialLongitude: 51.3890,
+                      initialLatitude: '35.6892',
+                      initialLongitude: '51.3890',
                       onLocationSelected: (latitude, longitude) {
                         setState(() {
                           this.latitude = latitude;

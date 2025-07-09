@@ -307,7 +307,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           contentPadding: EdgeInsets.zero,
                           dense: true,
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                   const SizedBox(height: 24),

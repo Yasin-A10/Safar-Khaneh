@@ -181,6 +181,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                           padding: const EdgeInsets.all(16.0),
 
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment:
@@ -517,7 +518,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                                   ),
                                                 ),
                                                 label: Text(
-                                                  facility.name!,
+                                                  facility.name,
                                                   style: TextStyle(
                                                     color: AppColors.primary700,
                                                   ),
@@ -674,6 +675,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                           extra: widget.residence,
                         );
                       },
+                      enabled: widget.residence.isActive!,
                     ),
                   ],
                 ),

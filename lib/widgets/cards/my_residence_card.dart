@@ -4,10 +4,11 @@ import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'dart:ui';
-import 'package:safar_khaneh/data/models/my_residence_model.dart';
+
+import 'package:safar_khaneh/features/search/data/residence_model.dart';
 
 class MyResidenceCard extends StatelessWidget {
-  final MyResidenceModel residence;
+  final ResidenceModel residence;
   const MyResidenceCard({super.key, required this.residence});
 
   @override
@@ -30,12 +31,19 @@ class MyResidenceCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: Stack(
                 children: [
-                  Image.asset(
-                    residence.backgroundImage,
-                    fit: BoxFit.cover,
-                    height: 180,
-                    width: double.infinity,
-                  ),
+                  residence.imageUrl != null
+                      ? Image.network(
+                        residence.imageUrl!,
+                        fit: BoxFit.cover,
+                        height: 180,
+                        width: double.infinity,
+                      )
+                      : Image.asset(
+                        'assets/images/Residences/1.jpg',
+                        fit: BoxFit.cover,
+                        height: 180,
+                        width: double.infinity,
+                      ),
                   Positioned(
                     top: 8,
                     left: 4,
@@ -60,7 +68,7 @@ class MyResidenceCard extends StatelessWidget {
                               children: [
                                 Text(
                                   formatNumberToPersianWithoutSeparator(
-                                    residence.rating.toString(),
+                                    residence.avgRating.toString(),
                                   ),
                                   style: TextStyle(
                                     color: AppColors.white,
@@ -93,7 +101,7 @@ class MyResidenceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      residence.title,
+                      residence.title!,
                       style: TextStyle(
                         color: AppColors.grey900,
                         fontSize: 16,
@@ -102,7 +110,7 @@ class MyResidenceCard extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '${residence.city}, ${residence.province}',
+                      '${residence.location?.city?.name}, ${residence.location?.city?.province?.name}',
                       style: TextStyle(fontSize: 14, color: AppColors.grey300),
                     ),
                     SizedBox(height: 4),
@@ -117,9 +125,7 @@ class MyResidenceCard extends StatelessWidget {
                             ),
                             SizedBox(width: 5),
                             Text(
-                              formatNumberToPersianWithoutSeparator(
-                                residence.roomCount.toString(),
-                              ),
+                              residence.roomCount != null ? formatNumberToPersian(residence.roomCount!) : '۰',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.grey600,
@@ -161,9 +167,7 @@ class MyResidenceCard extends StatelessWidget {
                             ),
                             SizedBox(width: 2),
                             Text(
-                              formatNumberToPersianWithoutSeparator(
-                                residence.capacity.toString(),
-                              ),
+                              residence.capacity != null ? formatNumberToPersian(residence.capacity!) : '۰',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: AppColors.grey600,
@@ -176,7 +180,7 @@ class MyResidenceCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${formatNumberToPersian(residence.price)} تومان',
+                  '${formatNumberToPersian(residence.pricePerNight!)} تومان',
                   style: TextStyle(
                     fontSize: 18,
                     color: AppColors.primary800,

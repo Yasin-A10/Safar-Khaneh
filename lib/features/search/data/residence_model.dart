@@ -1,3 +1,5 @@
+import 'package:safar_khaneh/data/real-models/feature_model.dart';
+
 class ResidenceModel {
   int? id;
   String? title;
@@ -15,7 +17,8 @@ class ResidenceModel {
   String? imageUrl;
   Location? location;
   String? createdAt;
-  List<Features>? features;
+  List<FeatureModel>? features;
+  bool? isActive;
 
   ResidenceModel({
     this.id,
@@ -35,6 +38,7 @@ class ResidenceModel {
     this.location,
     this.createdAt,
     this.features,
+    this.isActive,
   });
 
   ResidenceModel.fromJson(Map<String, dynamic> json) {
@@ -53,16 +57,15 @@ class ResidenceModel {
     status = json['status'];
     imageUrl = json['image_url'];
     location =
-        json['location'] != null
-            ? new Location.fromJson(json['location'])
-            : null;
+        json['location'] != null ? Location.fromJson(json['location']) : null;
     createdAt = json['created_at'];
     if (json['features'] != null) {
-      features = <Features>[];
+      features = <FeatureModel>[];
       json['features'].forEach((v) {
-        features!.add(new Features.fromJson(v));
+        features!.add(FeatureModel.fromJson(v));
       });
     }
+    isActive = json['is_active'];
   }
 
   Map<String, dynamic> toJson() {
@@ -88,23 +91,8 @@ class ResidenceModel {
     if (this.features != null) {
       data['features'] = this.features!.map((v) => v.toJson()).toList();
     }
+    data['is_active'] = this.isActive;
     return data;
-  }
-}
-
-class Features {
-  int? id;
-  String? name;
-
-  Features({this.id, this.name});
-
-  Features.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'id': id, 'name': name};
   }
 }
 
@@ -120,7 +108,7 @@ class Location {
   Location.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     address = json['address'];
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
+    city = json['city'] != null ? City.fromJson(json['city']) : null;
     lat = json['lat'];
     lng = json['lng'];
   }
@@ -138,6 +126,31 @@ class Location {
   }
 }
 
+// class City {
+//   int? id;
+//   String? name;
+//   Province? province;
+
+//   City({this.id, this.name, this.province});
+
+//   City.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     name = json['name'];
+//     province =
+//         json['province'] != null ? Province.fromJson(json['province']) : null;
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['name'] = this.name;
+//     if (this.province != null) {
+//       data['province'] = this.province!.toJson();
+//     }
+//     return data;
+//   }
+// }
+
 class City {
   int? id;
   String? name;
@@ -148,22 +161,55 @@ class City {
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    province =
-        json['province'] != null
-            ? new Province.fromJson(json['province'])
-            : null;
+    province = json['province'] != null
+        ? Province.fromJson(json['province'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    if (this.province != null) {
-      data['province'] = this.province!.toJson();
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    if (province != null) {
+      data['province'] = province!.toJson();
     }
     return data;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is City && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'City(id: $id, name: $name)';
+  }
 }
+
+
+// class Province {
+//   int? id;
+//   String? name;
+
+//   Province({this.id, this.name});
+
+//   Province.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     name = json['name'];
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['id'] = this.id;
+//     data['name'] = this.name;
+//     return data;
+//   }
+// }
 
 class Province {
   int? id;
@@ -177,9 +223,24 @@ class Province {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
     return data;
+  }
+
+  // Override کردن == برای مقایسه صحیح در DropdownButton و غیره
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Province && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Province(id: $id, name: $name)';
   }
 }

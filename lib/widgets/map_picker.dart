@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPicker extends StatefulWidget {
-  final double? initialLatitude; // مختصات اولیه (اختیاری)
-  final double? initialLongitude;
+  final String? initialLatitude; // مختصات اولیه (اختیاری)
+  final String? initialLongitude;
   final Function(double latitude, double longitude)
   onLocationSelected; // کال‌بک برای برگرداندن مختصات
 
@@ -29,8 +29,8 @@ class _MapPickerState extends State<MapPicker> {
     // تنظیم لوکیشن اولیه
     if (widget.initialLatitude != null && widget.initialLongitude != null) {
       _selectedLocation = LatLng(
-        widget.initialLatitude!,
-        widget.initialLongitude!,
+        double.parse(widget.initialLatitude!),
+        double.parse(widget.initialLongitude!),
       );
     } else {
       // اگه لوکیشن اولیه وجود نداشت، یه لوکیشن پیش‌فرض (مثلاً مرکز تهران) تنظیم می‌کنیم

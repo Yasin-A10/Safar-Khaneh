@@ -23,7 +23,10 @@ class _MapWidgetState extends State<MapWidget> {
     _markers = {
       Marker(
         markerId: const MarkerId('residence_location'),
-        position: LatLng(double.parse(widget.latitude), double.parse(widget.longitude)),
+        position: LatLng(
+          double.parse(widget.latitude),
+          double.parse(widget.longitude),
+        ),
         infoWindow: const InfoWindow(title: 'مکان اقامتگاه'),
       ),
     };
@@ -77,11 +80,16 @@ class _MapWidgetState extends State<MapWidget> {
                 mapController = controller;
               },
               initialCameraPosition: CameraPosition(
-                target: LatLng(double.parse(widget.latitude), double.parse(widget.longitude)),
+                target: LatLng(
+                  double.parse(widget.latitude),
+                  double.parse(widget.longitude),
+                ),
                 zoom: 14.0,
               ),
               mapType: MapType.normal,
               markers: _markers,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
             ),
           ),
         ),

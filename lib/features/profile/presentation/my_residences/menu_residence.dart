@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/data/models/my_residence_model.dart';
+import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 
 class MenuResidence extends StatelessWidget {
-  final MyResidenceModel residence;
+  final ResidenceModel residence;
   const MenuResidence({super.key, required this.residence});
 
   @override
@@ -14,7 +14,7 @@ class MenuResidence extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(residence.title),
+        title: Text(residence.title!),
         actions: [
           IconButton(
             icon: const Icon(Iconsax.arrow_left),
