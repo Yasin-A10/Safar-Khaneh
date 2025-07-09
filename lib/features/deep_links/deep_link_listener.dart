@@ -26,21 +26,23 @@ class _DeepLinkListenerState extends State<DeepLinkListener> {
           } else {
             GoRouter.of(navigatorKey.currentContext!).go('/payment-failed');
           }
-        }
-        else if (uri.path == '/verify-email' && mounted) {
+        } else if (uri.path == '/verify-email' && mounted) {
           final token = uri.queryParameters['token'];
           if (token != null) {
             _verifyEmailService.verifyEmail(token: token).then((value) {
-              if (value['status'] == 200 || value['status'] == 201) {
+              if (value['status'] == 'success') {
                 GoRouter.of(navigatorKey.currentContext!).go('/verify-email');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('ایمیل با موفقیت تایید شد')),
+                );
               } else {
                 return;
               }
             });
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('خطا در تایید ایمیل')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('خطا در تایید ایمیل')));
           }
         }
       },

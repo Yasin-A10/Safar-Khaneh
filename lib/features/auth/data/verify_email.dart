@@ -14,9 +14,15 @@ class VerifyEmailService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
+        return {
+          'status': 'success',
+          'message': 'ایمیل با موفقیت تایید شد',
+        };
       } else {
-        throw Exception('تایید ایمیل ناموفق: ${response.statusCode}');
+        return {
+          'status': 'error',
+          'message': 'تایید ایمیل ناموفق: ${response.statusCode}',
+        };
       }
     } on DioException catch (e) {
       // بررسی خطای دریافتی از سرور

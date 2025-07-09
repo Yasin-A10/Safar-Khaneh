@@ -125,7 +125,7 @@ class _EditResidenceDetailScreenState extends State<EditResidenceDetailScreen> {
     selectedType = widget.residence.type;
     selectedProvince = widget.residence.location?.city?.province;
     selectedCity = widget.residence.location?.city;
-    imageFile = File(widget.residence.imageUrl!);
+    imageFile = File(widget.residence.imageUrl.toString());
     _loadProvincesAndCities();
     _loadFeatures();
     super.initState();
