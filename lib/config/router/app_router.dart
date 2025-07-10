@@ -9,7 +9,7 @@ import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.da
 
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_success_screen.dart';
-import 'package:safar_khaneh/features/deep_links/presentation/verify_email_screen.dart';
+import 'package:safar_khaneh/features/auth/presentation/verify_email_screen.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
