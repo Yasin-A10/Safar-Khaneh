@@ -3,11 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/residence_card_model.dart';
+import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  final ResidenceCardModel residence;
+  final ResidenceModel residence;
   const CheckoutScreen({super.key, required this.residence});
 
   @override
@@ -50,8 +50,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          widget.residence.backgroundImage,
+                        child: Image.network(
+                          widget.residence.imageUrl!,
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,
@@ -63,7 +63,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.residence.title,
+                              widget.residence.title!,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${widget.residence.city}, ${widget.residence.province}',
+                                  '${widget.residence.location?.city?.name!}, ${widget.residence.location?.city?.province?.name!}',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -100,7 +100,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                formatNumberToPersian(widget.residence.price),
+                                formatNumberToPersian(widget.residence.pricePerNight!),
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         children: [
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              widget.residence.rating.toStringAsFixed(1),
+                              widget.residence.avgRating.toString(),
                             ),
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
@@ -176,7 +176,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             Text(
                               formatNumberToPersianWithoutSeparator(
-                                widget.residence.startDate!,
+                                '1404/07/10',
                               ),
                               style: TextStyle(
                                 fontSize: 14,
@@ -210,7 +210,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             Text(
                               formatNumberToPersianWithoutSeparator(
-                                widget.residence.endDate!,
+                                '1404/07/15',
                               ),
                               style: TextStyle(
                                 fontSize: 14,
@@ -244,7 +244,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             Text(
                               formatNumberToPersianWithoutSeparator(
-                                widget.residence.capacity.toString(),
+                                '3',
                               ),
                               style: TextStyle(
                                 fontSize: 14,
@@ -278,7 +278,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             Text(
                               formatNumberToPersianWithoutSeparator(
-                                widget.residence.phoneNumber.toString(),
+                                widget.residence.owner!.phoneNumber.toString(),
                               ),
                               style: TextStyle(
                                 fontSize: 14,
@@ -312,7 +312,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const Spacer(),
                             Text(
-                              formatNumberToPersian(widget.residence.price),
+                              formatNumberToPersian(385000),
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -334,7 +334,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const Spacer(),
                             Text(
-                              formatNumberToPersian(30000),
+                              '${formatNumberToPersian(20)}%',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -356,7 +356,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             const Spacer(),
                             Text(
-                              formatNumberToPersian(90000),
+                              '${formatNumberToPersian(90000)} تومان',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,

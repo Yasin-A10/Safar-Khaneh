@@ -27,7 +27,6 @@ import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/root/not_found_screen.dart';
 import 'route_paths.dart';
 import 'package:safar_khaneh/features/profile/presentation/booking/booking_details_screen.dart';
-import 'package:safar_khaneh/data/models/residence_card_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/booking/my_bookings_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/profile_screen.dart';
 import 'package:safar_khaneh/root/root_screen.dart';
@@ -72,14 +71,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.requestToBook,
       builder: (context, state) {
-        final residence = state.extra as ResidenceCardModel;
+        final residence = state.extra as ResidenceModel;
         return RequestToBookScreen(residence: residence);
       },
     ),
     GoRoute(
       path: RoutePaths.checkout,
       builder: (context, state) {
-        final residence = state.extra as ResidenceCardModel;
+        final residence = state.extra as ResidenceModel;
         return CheckoutScreen(residence: residence);
       },
     ),

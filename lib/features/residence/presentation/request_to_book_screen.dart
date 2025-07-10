@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/residence_card_model.dart';
+import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/counter.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
 import 'package:safar_khaneh/widgets/persian_calendar.dart';
 
 class RequestToBookScreen extends StatefulWidget {
-  final ResidenceCardModel residence;
+  final ResidenceModel residence;
 
   const RequestToBookScreen({super.key, required this.residence});
 
@@ -51,7 +51,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                 const SizedBox(height: 24),
                 GuestCounter(
                   min: 1,
-                  max: widget.residence.capacity,
+                  max: widget.residence.capacity!,
                   onChanged: (count) {
                     print('تعداد مهمان: $count');
                   },
@@ -72,7 +72,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'قیمت: ۲ شب',
+                          'قیمت هر شب',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -80,7 +80,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                           ),
                         ),
                         Text(
-                          formatNumberToPersian(widget.residence.price),
+                          formatNumberToPersian(widget.residence.pricePerNight!),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -102,7 +102,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                           ),
                         ),
                         Text(
-                          formatNumberToPersian(widget.residence.cleaningFee!),
+                          formatNumberToPersian(widget.residence.cleaningPrice!),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -124,7 +124,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                           ),
                         ),
                         Text(
-                          formatNumberToPersian(widget.residence.serviceFee!),
+                          formatNumberToPersian(widget.residence.servicesPrice!),
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -149,9 +149,9 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                         ),
                         Text(
                           formatNumberToPersian(
-                            widget.residence.price +
-                                widget.residence.cleaningFee! +
-                                widget.residence.serviceFee!,
+                            widget.residence.pricePerNight! +
+                                widget.residence.cleaningPrice! +
+                                widget.residence.servicesPrice!,
                           ),
                           style: TextStyle(
                             fontSize: 18,
