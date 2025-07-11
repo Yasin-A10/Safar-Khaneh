@@ -1,9 +1,10 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
+import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
 
 class ReservationCalculateService {
   final AuthApiClient _client = AuthApiClient();
 
-  Future<Map<String, dynamic>> calculatePrice({
+  Future<CheckoutPriceModel> calculatePrice({
     required String discountCode,
     required int residenceId,
     required String checkIn,
@@ -21,7 +22,7 @@ class ReservationCalculateService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
+        return CheckoutPriceModel.fromJson(response.data);
       } else {
         throw Exception('خطا در محاسبه قیمت: ${response.statusCode}');
       }

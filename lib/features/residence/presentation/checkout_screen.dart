@@ -3,12 +3,19 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
+import 'package:safar_khaneh/widgets/counter.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final ResidenceModel residence;
-  const CheckoutScreen({super.key, required this.residence});
+  final CheckoutPriceModel calculationResult;
+  const CheckoutScreen({
+    super.key,
+    required this.residence,
+    required this.calculationResult,
+  });
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -21,6 +28,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: AppColors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: AppColors.white,
@@ -33,543 +41,638 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ],
         ),
         body: Container(
-          color: AppColors.white,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          widget.residence.imageUrl!,
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                        ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        widget.residence.imageUrl!,
+                        fit: BoxFit.cover,
+                        height: 100,
+                        width: 100,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.residence.title!,
-                              style: TextStyle(
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.residence.title!,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.grey900,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Iconsax.location,
+                                color: AppColors.grey300,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${widget.residence.location?.city?.name!}, ${widget.residence.location?.city?.province?.name!}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.grey300,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.grey50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              formatNumberToPersian(
+                                widget.residence.pricePerNight!,
+                              ),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.grey900,
+                                color: AppColors.primary800,
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Icon(
-                                  Iconsax.location,
-                                  color: AppColors.grey300,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${widget.residence.location?.city?.name!}, ${widget.residence.location?.city?.province?.name!}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.grey300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.grey50,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                formatNumberToPersian(widget.residence.pricePerNight!),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary800,
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          formatNumberToPersianWithoutSeparator(
+                            widget.residence.avgRating.toString(),
+                          ),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: AppColors.grey500,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Iconsax.star1,
+                          color: AppColors.accentColor,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AppColors.white,
+                    border: Border.all(color: AppColors.grey100, width: 1),
+                  ),
+                  child: GuestCounter(
+                    min: 1,
+                    max: widget.residence.capacity!,
+                    onChanged: (value) {},
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AppColors.white,
+                    border: Border.all(color: AppColors.grey100, width: 1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'رزرو شما',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary800,
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Iconsax.calendar_1,
+                                color: AppColors.grey500,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'تاریخ شروع ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            formatNumberToPersianWithoutSeparator('1404/07/10'),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Iconsax.calendar_1,
+                                color: AppColors.grey500,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'تاریخ پایان',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            formatNumberToPersianWithoutSeparator('1404/07/15'),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Iconsax.calendar_1,
+                                color: AppColors.grey500,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'تعداد شب‌ها',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            formatNumberToPersianWithoutSeparator(
+                              widget.calculationResult.numNights!.toString(),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Iconsax.call,
+                                color: AppColors.grey500,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'شماره تماس',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            formatNumberToPersianWithoutSeparator(
+                              widget.residence.owner!.phoneNumber.toString(),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Divider(color: AppColors.grey100, thickness: 1),
+                      const SizedBox(height: 16),
+                      Text(
+                        'اطلاعات پرداخت',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary800,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
                           Text(
-                            formatNumberToPersianWithoutSeparator(
-                              widget.residence.avgRating.toString(),
-                            ),
-                            style: const TextStyle(
+                            'هزینه شب‌ها',
+                            style: TextStyle(
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              fontSize: 16,
                               color: AppColors.grey500,
                             ),
                           ),
-                          const SizedBox(width: 4),
-                          const Icon(
-                            Iconsax.star1,
-                            color: AppColors.accentColor,
-                            size: 20,
+                          const Spacer(),
+                          Text(
+                            formatNumberToPersian(
+                              widget.calculationResult.priceForNights!,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            'هزینه خدمات',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            formatNumberToPersian(
+                              widget.calculationResult.servicesPrice!,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            'هزینه نظافت',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            formatNumberToPersian(
+                              widget.calculationResult.cleaningPrice!,
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            'تخفیف',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            formatNumberToPersian(
+                              widget.calculationResult.discountValue!
+                                  .toDouble(),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Text(
+                            'مبلغ قابل پرداخت',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey500,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            '${formatNumberToPersian(widget.calculationResult.finalPrice!.toDouble())} تومان',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.grey700,
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: AppColors.white,
-                      border: Border.all(color: AppColors.grey100, width: 1),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'رزرو شما',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary800,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Iconsax.calendar_1,
-                                  color: AppColors.grey500,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'تاریخ شروع ',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.grey500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              formatNumberToPersianWithoutSeparator(
-                                '1404/07/10',
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Iconsax.calendar_1,
-                                  color: AppColors.grey500,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'تاریخ پایان',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.grey500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              formatNumberToPersianWithoutSeparator(
-                                '1404/07/15',
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Iconsax.profile_2user,
-                                  color: AppColors.grey500,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'تعداد نفرات',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.grey500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              formatNumberToPersianWithoutSeparator(
-                                '3',
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Iconsax.call,
-                                  color: AppColors.grey500,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'شماره تماس',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.grey500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              formatNumberToPersianWithoutSeparator(
-                                widget.residence.owner!.phoneNumber.toString(),
-                              ),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Divider(color: AppColors.grey100, thickness: 1),
-                        const SizedBox(height: 16),
-                        Text(
-                          'اطلاعات پرداخت',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary800,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              'مبلغ کل',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              formatNumberToPersian(385000),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              'تخفیف',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              '${formatNumberToPersian(20)}%',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Text(
-                              'مبلغ قابل پرداخت',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey500,
-                              ),
-                            ),
-                            const Spacer(),
-                            Text(
-                              '${formatNumberToPersian(90000)} تومان',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.grey700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 20,
+            top: 12,
+          ),
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0, -4),
+                blurRadius: 12,
+                spreadRadius: 0,
               ),
-              Button(
-                width: double.infinity,
-                label: 'انتخاب روش پرداخت',
-                onPressed: () {
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: AppColors.white,
-                    context: context,
-                    builder:
-                        (context) => Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: SingleChildScrollView(
-                              child: Container(
-                                padding: const EdgeInsets.all(16.0),
-                                width: MediaQuery.of(context).size.width,
-                                child: StatefulBuilder(
-                                  // اضافه کردن StatefulBuilder
-                                  builder: (
-                                    BuildContext context,
-                                    StateSetter setStateModal,
-                                  ) {
-                                    return Column(
-                                      mainAxisSize: MainAxisSize.min,
+            ],
+          ),
+          child: Button(
+            label: 'درخواست رزرو',
+            width: double.infinity,
+            onPressed: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: AppColors.white,
+                context: context,
+                builder:
+                    (context) => Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: SingleChildScrollView(
+                          child: Container(
+                            padding: const EdgeInsets.all(16.0),
+                            width: MediaQuery.of(context).size.width,
+                            child: StatefulBuilder(
+                              builder: (
+                                BuildContext context,
+                                StateSetter setStateModal,
+                              ) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text(
-                                              'روش پرداخت خود را انتخاب کنید',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: AppColors.primary800,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              onPressed:
-                                                  () =>
-                                                      Navigator.of(
-                                                        context,
-                                                      ).pop(), // استفاده از Navigator.pop
-                                              icon: const Icon(
-                                                Iconsax.close_circle,
-                                                color: AppColors.primary800,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 12),
-                                        Container(
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              16,
-                                            ),
-                                            color: AppColors.white,
-                                            border: Border.all(
-                                              color: AppColors.grey100,
-                                              width: 1,
-                                            ),
+                                        const Text(
+                                          'روش پرداخت خود را انتخاب کنید',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: AppColors.primary800,
                                           ),
-                                          child: Column(
+                                        ),
+                                        IconButton(
+                                          onPressed: () => context.pop(),
+                                          icon: const Icon(
+                                            Iconsax.close_circle,
+                                            color: AppColors.primary800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        color: AppColors.white,
+                                        border: Border.all(
+                                          color: AppColors.grey100,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          //! کیف پول
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              // کیف پول
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Iconsax
-                                                            .empty_wallet_tick,
-                                                        color:
-                                                            AppColors.grey700,
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Text(
-                                                        'کیف پول',
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color:
-                                                              AppColors.grey700,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                  Icon(
+                                                    Iconsax.empty_wallet_tick,
+                                                    color: AppColors.grey700,
                                                   ),
-                                                  Checkbox(
-                                                    value:
-                                                        selectedMethod ==
-                                                        'wallet',
-                                                    onChanged: (_) {
-                                                      setStateModal(() {
-                                                        // استفاده از setStateModal
-                                                        selectedMethod =
-                                                            'wallet';
-                                                      });
-                                                    },
-                                                    activeColor:
-                                                        AppColors.primary800,
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'کیف پول',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: AppColors.grey700,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 24),
-                                              // کارت بانکی
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Iconsax.card_tick_1,
-                                                        color:
-                                                            AppColors.grey700,
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      Text(
-                                                        'پرداخت با کارت بانکی',
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color:
-                                                              AppColors.grey700,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Checkbox(
-                                                    value:
-                                                        selectedMethod ==
-                                                        'card',
-                                                    onChanged: (_) {
-                                                      setStateModal(() {
-                                                        // استفاده از setStateModal
-                                                        selectedMethod = 'card';
-                                                      });
-                                                    },
-                                                    activeColor:
-                                                        AppColors.primary800,
-                                                  ),
-                                                ],
+                                              Checkbox(
+                                                value:
+                                                    selectedMethod == 'wallet',
+                                                onChanged: (_) {
+                                                  setStateModal(() {
+                                                    // استفاده از setStateModal
+                                                    selectedMethod = 'wallet';
+                                                  });
+                                                },
+                                                activeColor:
+                                                    AppColors.primary800,
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        const SizedBox(height: 24),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Button(
-                                                label: 'انتخاب',
-                                                onPressed: () {
-                                                  if (selectedMethod != '') {
-                                                    print(
-                                                      'روش پرداخت انتخاب‌شده: $selectedMethod',
-                                                    );
-                                                    Navigator.of(
-                                                      context,
-                                                    ).pop(); // بستن BottomSheet
-                                                  } else {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text(
-                                                          'لطفاً یک روش پرداخت انتخاب کنید',
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                },
+                                          const SizedBox(height: 24),
+                                          //! کارت بانکی
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Iconsax.card_tick_1,
+                                                    color: AppColors.grey700,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'پرداخت با کارت بانکی',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: AppColors.grey700,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
+                                              Checkbox(
+                                                value: selectedMethod == 'card',
+                                                onChanged: (_) {
+                                                  setStateModal(() {
+                                                    selectedMethod = 'card';
+                                                  });
+                                                },
+                                                activeColor:
+                                                    AppColors.primary800,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 24),
+                                          //! پرداخت نقدی
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Iconsax.money,
+                                                    color: AppColors.grey700,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'پرداخت نقدی',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: AppColors.grey700,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Checkbox(
+                                                value: selectedMethod == 'cash',
+                                                onChanged: (_) {
+                                                  setStateModal(() {
+                                                    selectedMethod = 'cash';
+                                                  });
+                                                },
+                                                activeColor:
+                                                    AppColors.primary800,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Button(
+                                            label: 'انتخاب',
+                                            onPressed: () {
+                                              if (selectedMethod != '') {
+                                                print(
+                                                  'روش پرداخت انتخاب‌شده: $selectedMethod',
+                                                );
+                                                Navigator.of(
+                                                  context,
+                                                ).pop(); // بستن BottomSheet
+                                              } else {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'لطفاً یک روش پرداخت انتخاب کنید',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
                                         ),
                                       ],
-                                    );
-                                  },
-                                ),
-                              ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ),
-                  );
-                },
-              ),
-            ],
+                      ),
+                    ),
+              );
+            },
           ),
         ),
       ),

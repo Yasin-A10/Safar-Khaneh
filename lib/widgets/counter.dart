@@ -47,7 +47,7 @@ class _GuestCounterState extends State<GuestCounter> {
       children: [
         const Text(
           'تعداد نفرات',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         Row(
           children: [

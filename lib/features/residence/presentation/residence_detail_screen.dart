@@ -414,6 +414,42 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                       ],
                                     ),
                                     const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Iconsax.moon,
+                                              color: AppColors.primary800,
+                                              size: 22,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'تعداد شب:',
+                                              style: TextStyle(
+                                                color: AppColors.grey500,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          formatNumberToPersianWithoutSeparator(
+                                            widget.residence.maxNightsStay ??
+                                                'نامشخص',
+                                          ),
+                                          style: TextStyle(
+                                            color: AppColors.grey800,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     const Divider(
                                       color: AppColors.primary700,
                                       thickness: 1,

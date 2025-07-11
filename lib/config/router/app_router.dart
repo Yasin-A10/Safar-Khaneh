@@ -21,6 +21,7 @@ import 'package:safar_khaneh/features/profile/presentation/my_residences/resevat
 import 'package:safar_khaneh/features/profile/presentation/my_residences/transation_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/personal_info_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/request_to_add_residence/request_to_add_residence_screen.dart';
+import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/presentation/checkout_screen.dart';
 import 'package:safar_khaneh/features/residence/presentation/request_to_book_screen.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
@@ -38,7 +39,15 @@ import '../../features/residence/presentation/residence_detail_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final List<String> publicRoutes = ['/login', '/register', '/home', '/search', '/forgot-password', '/reset-password', '/verify-email'];
+final List<String> publicRoutes = [
+  '/login',
+  '/register',
+  '/home',
+  '/search',
+  '/forgot-password',
+  '/reset-password',
+  '/verify-email',
+];
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: navigatorKey,
@@ -58,7 +67,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final profile = state.extra as ProfileModel;
         return PersonalInfoScreen(profile: profile);
-      }
+      },
     ),
 
     GoRoute(
@@ -78,8 +87,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.checkout,
       builder: (context, state) {
-        final residence = state.extra as ResidenceModel;
-        return CheckoutScreen(residence: residence);
+        final args = state.extra as CheckoutArguments;
+        return CheckoutScreen(
+          residence: args.residence,
+          calculationResult: args.calculationResult,
+        );
       },
     ),
 
@@ -205,3 +217,10 @@ final GoRouter appRouter = GoRouter(
 
   errorBuilder: (context, state) => const NotFoundScreen(),
 );
+
+class CheckoutArguments {
+  final ResidenceModel residence;
+  final CheckoutPriceModel calculationResult;
+
+  CheckoutArguments({required this.residence, required this.calculationResult});
+}

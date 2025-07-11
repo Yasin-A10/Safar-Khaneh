@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-String formatNumberToPersian(int number, {String separator = ','}) {
+String formatNumberToPersian(num number, {String separator = ','}) {
   final formatter = NumberFormat('#,###');
   String formatted = formatter.format(number);
 
