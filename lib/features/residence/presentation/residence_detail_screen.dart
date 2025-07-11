@@ -438,10 +438,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          formatNumberToPersianWithoutSeparator(
-                                            widget.residence.maxNightsStay ??
-                                                'نامشخص',
-                                          ),
+                                          '${formatNumberToPersianWithoutSeparator(widget.residence.maxNightsStay.toString())} شب',
                                           style: TextStyle(
                                             color: AppColors.grey800,
                                             fontSize: 16,
@@ -450,6 +447,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: 16),
                                     const Divider(
                                       color: AppColors.primary700,
                                       thickness: 1,
@@ -478,9 +476,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                           ],
                                         ),
                                         Text(
-                                          formatNumberToPersian(
-                                            widget.residence.cleaningPrice!,
-                                          ),
+                                          '${formatNumberToPersianWithoutSeparator(widget.residence.cleaningPrice.toString())} تومان',
                                           style: TextStyle(
                                             color: AppColors.grey800,
                                             fontSize: 16,
@@ -513,9 +509,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                           ],
                                         ),
                                         Text(
-                                          formatNumberToPersian(
-                                            widget.residence.servicesPrice!,
-                                          ),
+                                          '${formatNumberToPersianWithoutSeparator(widget.residence.servicesPrice.toString())} تومان',
                                           style: TextStyle(
                                             color: AppColors.grey800,
                                             fontSize: 16,

@@ -154,10 +154,7 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     }
                     return PersianTableCalendar(
-                      availableDates:
-                          snapshot.data!
-                              .map((item) => DateTime.parse(item.date))
-                              .toList(),
+                      calendarData: snapshot.data!,
                       onRangeSelected: (start, end) {
                         setState(() {
                           selectedStartDate = start;

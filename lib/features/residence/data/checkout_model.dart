@@ -1,4 +1,6 @@
 class CheckoutPriceModel {
+  final String? checkIn;
+  final String? checkOut;
   final int? cleaningPrice;
   final int? servicesPrice;
   final int? pricePerNight;
@@ -9,6 +11,8 @@ class CheckoutPriceModel {
   final num? finalPrice;
 
   CheckoutPriceModel({
+    this.checkIn,
+    this.checkOut,
     this.cleaningPrice,
     this.servicesPrice,
     this.pricePerNight,
@@ -21,6 +25,8 @@ class CheckoutPriceModel {
 
   factory CheckoutPriceModel.fromJson(Map<String, dynamic> json) {
     return CheckoutPriceModel(
+      checkIn: json['check_in'] as String?,
+      checkOut: json['check_out'] as String?,
       cleaningPrice: json['cleaning_price'] as int?,
       servicesPrice: json['services_price'] as int?,
       pricePerNight: json['price_per_night'] as int?,
@@ -34,6 +40,8 @@ class CheckoutPriceModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'check_in': checkIn,
+      'check_out': checkOut,
       'cleaning_price': cleaningPrice,
       'services_price': servicesPrice,
       'price_per_night': pricePerNight,

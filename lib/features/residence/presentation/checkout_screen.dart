@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/features/profile/data/profile_model.dart';
+import 'package:safar_khaneh/features/profile/data/profile_services.dart';
 import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
+import 'package:safar_khaneh/features/residence/data/reservation_create_service.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/counter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final ResidenceModel residence;
@@ -22,7 +28,125 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String selectedMethod = 'wallet';
+  final ReservationCreateService _reservationCreateService =
+      ReservationCreateService();
+  final ProfileService _walletService = ProfileService();
+  late Future<ProfileModel> _futureProfile;
+  int _walletBalance = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureProfile = _walletService.fetchProfile();
+    _futureProfile.then((value) {
+      setState(() {
+        _walletBalance = value.walletBalance;
+      });
+    });
+  }
+
+  String _selectedMethod = 'wallet';
+  int _guestCount = 1;
+
+  void _handleCheckout(context) async {
+    try {
+      final response = await _reservationCreateService.createReservation(
+        discountCode: '',
+        residenceId: widget.residence.id!,
+        checkIn: widget.calculationResult.checkIn!,
+        checkOut: widget.calculationResult.checkOut!,
+        guestCount: _guestCount,
+        method: _selectedMethod,
+      );
+
+      if (response['status'] == 'success' && mounted) {
+        if (_selectedMethod == 'wallet') {
+          if ((widget.calculationResult.finalPrice! / 10) <= _walletBalance) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                content: Text(
+                  'پرداخت با موفقیت انجام شد',
+                  textDirection: TextDirection.rtl,
+                ),
+                backgroundColor: AppColors.success200,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+            context.go('/my_bookings');
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                content: Text(
+                  'موجودی کیف پول کافی نیست',
+                  textDirection: TextDirection.rtl,
+                ),
+                backgroundColor: AppColors.error200,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        } else if (_selectedMethod == 'online') {
+          final canLaunch = await canLaunchUrlString(response['url']);
+          if (canLaunch) {
+            await launchUrlString(
+              response['url'],
+              mode: LaunchMode.externalApplication,
+            );
+          } else {
+            throw Exception('امکان باز کردن لینک پرداخت وجود ندارد');
+          }
+        } else if (_selectedMethod == 'cash') {
+          GoRouter.of(navigatorKey.currentContext!).go('/payment-success');
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'امکان باز کردن لینک پرداخت وجود ندارد',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.error200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(e.toString(), textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -149,7 +273,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: GuestCounter(
                     min: 1,
                     max: widget.residence.capacity!,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      setState(() {
+                        _guestCount = value;
+                      });
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -194,7 +322,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           Text(
-                            formatNumberToPersianWithoutSeparator('1404/07/10'),
+                            formatNumberToPersianWithoutSeparator(
+                              convertToJalaliDate(
+                                widget.calculationResult.checkIn!,
+                              ),
+                            ),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -226,7 +358,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           Text(
-                            formatNumberToPersianWithoutSeparator('1404/07/15'),
+                            formatNumberToPersianWithoutSeparator(
+                              convertToJalaliDate(
+                                widget.calculationResult.checkOut!,
+                              ),
+                            ),
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -258,9 +394,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ],
                           ),
                           Text(
-                            formatNumberToPersianWithoutSeparator(
-                              widget.calculationResult.numNights!.toString(),
-                            ),
+                            '${formatNumberToPersianWithoutSeparator(widget.calculationResult.numNights!.toString())} شب',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -328,7 +462,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           const Spacer(),
                           Text(
                             formatNumberToPersian(
-                              widget.calculationResult.priceForNights!,
+                              widget.calculationResult.priceForNights! / 10,
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -352,7 +486,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           const Spacer(),
                           Text(
                             formatNumberToPersian(
-                              widget.calculationResult.servicesPrice!,
+                              widget.calculationResult.servicesPrice! / 10,
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -376,7 +510,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           const Spacer(),
                           Text(
                             formatNumberToPersian(
-                              widget.calculationResult.cleaningPrice!,
+                              widget.calculationResult.cleaningPrice! / 10,
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -400,8 +534,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           const Spacer(),
                           Text(
                             formatNumberToPersian(
-                              widget.calculationResult.discountValue!
-                                  .toDouble(),
+                              widget.calculationResult.discountValue! / 10,
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -424,7 +557,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            '${formatNumberToPersian(widget.calculationResult.finalPrice!.toDouble())} تومان',
+                            '${formatNumberToPersian(widget.calculationResult.finalPrice! / 10)} تومان',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -544,11 +677,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               ),
                                               Checkbox(
                                                 value:
-                                                    selectedMethod == 'wallet',
+                                                    _selectedMethod == 'wallet',
                                                 onChanged: (_) {
                                                   setStateModal(() {
                                                     // استفاده از setStateModal
-                                                    selectedMethod = 'wallet';
+                                                    _selectedMethod = 'wallet';
                                                   });
                                                 },
                                                 activeColor:
@@ -581,10 +714,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ],
                                               ),
                                               Checkbox(
-                                                value: selectedMethod == 'card',
+                                                value:
+                                                    _selectedMethod == 'online',
                                                 onChanged: (_) {
                                                   setStateModal(() {
-                                                    selectedMethod = 'card';
+                                                    _selectedMethod = 'online';
                                                   });
                                                 },
                                                 activeColor:
@@ -617,10 +751,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ],
                                               ),
                                               Checkbox(
-                                                value: selectedMethod == 'cash',
+                                                value:
+                                                    _selectedMethod == 'cash',
                                                 onChanged: (_) {
                                                   setStateModal(() {
-                                                    selectedMethod = 'cash';
+                                                    _selectedMethod = 'cash';
                                                   });
                                                 },
                                                 activeColor:
@@ -640,24 +775,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           child: Button(
                                             label: 'انتخاب',
                                             onPressed: () {
-                                              if (selectedMethod != '') {
-                                                print(
-                                                  'روش پرداخت انتخاب‌شده: $selectedMethod',
-                                                );
-                                                Navigator.of(
-                                                  context,
-                                                ).pop(); // بستن BottomSheet
-                                              } else {
-                                                ScaffoldMessenger.of(
-                                                  context,
-                                                ).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                      'لطفاً یک روش پرداخت انتخاب کنید',
-                                                    ),
-                                                  ),
-                                                );
-                                              }
+                                              _handleCheckout(context);
                                             },
                                           ),
                                         ),
