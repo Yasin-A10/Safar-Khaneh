@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
 
 class VendorReservationCard extends StatelessWidget {
   final String link;
@@ -33,8 +34,8 @@ class VendorReservationCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                vendorReservation.backgroundImage,
+              child: Image.network(
+                vendorReservation.residence!.imageUrl!,
                 fit: BoxFit.cover,
                 height: 165,
                 width: 100,
@@ -51,7 +52,7 @@ class VendorReservationCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        vendorReservation.title,
+                        vendorReservation.residence!.title!,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -71,7 +72,7 @@ class VendorReservationCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${vendorReservation.city}, ${vendorReservation.province}',
+                            '${vendorReservation.residence!.location!.city!.name}, ${vendorReservation.residence!.location!.city!.province!.name}',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -92,7 +93,9 @@ class VendorReservationCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          formatNumberToPersian(vendorReservation.price),
+                          formatNumberToPersian(
+                            vendorReservation.residence!.pricePerNight!,
+                          ),
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -127,7 +130,9 @@ class VendorReservationCard extends StatelessWidget {
                           SizedBox(width: 16),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              vendorReservation.startDate.toString(),
+                              convertToJalaliDate(
+                                vendorReservation.checkIn.toString(),
+                              ),
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -163,7 +168,7 @@ class VendorReservationCard extends StatelessWidget {
                           SizedBox(width: 16),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              vendorReservation.capacity.toString(),
+                              vendorReservation.residence!.capacity.toString(),
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -182,7 +187,7 @@ class VendorReservationCard extends StatelessWidget {
                     children: [
                       Text(
                         formatNumberToPersianWithoutSeparator(
-                          vendorReservation.rating.toStringAsFixed(1),
+                          vendorReservation.residence!.avgRating.toString(),
                         ),
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,

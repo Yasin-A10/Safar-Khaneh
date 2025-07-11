@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/booked_residence_model.dart';
+import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
 
 class BookedResidenceCard extends StatelessWidget {
-  final BookedResidenceModel residence;
-  const BookedResidenceCard({super.key, required this.residence});
+  final UserReservationModel reservation;
+  const BookedResidenceCard({super.key, required this.reservation});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/my_bookings/details/${residence.id}', extra: residence);
+        context.push(
+          '/my_bookings/details/${reservation.id}',
+          extra: reservation,
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -27,8 +31,8 @@ class BookedResidenceCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                residence.backgroundImage,
+              child: Image.network(
+                reservation.residence!.imageUrl!,
                 fit: BoxFit.cover,
                 height: 165,
                 width: 100,
@@ -45,7 +49,7 @@ class BookedResidenceCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        residence.title,
+                        reservation.residence!.title!,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -65,7 +69,7 @@ class BookedResidenceCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${residence.city}, ${residence.province}',
+                            '${reservation.residence!.location!.city!.name}, ${reservation.residence!.location!.city!.province!.name}',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -86,7 +90,9 @@ class BookedResidenceCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          formatNumberToPersian(residence.price),
+                          formatNumberToPersian(
+                            reservation.residence!.pricePerNight!,
+                          ),
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -121,7 +127,7 @@ class BookedResidenceCard extends StatelessWidget {
                           SizedBox(width: 16),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              residence.startDate.toString(),
+                              convertToJalaliDate(reservation.checkIn!),
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -157,7 +163,7 @@ class BookedResidenceCard extends StatelessWidget {
                           SizedBox(width: 16),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              residence.capacity.toString(),
+                              reservation.residence!.capacity.toString(),
                             ),
                             style: TextStyle(
                               fontSize: 14,
@@ -176,7 +182,7 @@ class BookedResidenceCard extends StatelessWidget {
                     children: [
                       Text(
                         formatNumberToPersianWithoutSeparator(
-                          residence.rating.toStringAsFixed(1),
+                          reservation.residence?.avgRating.toString(),
                         ),
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 
 class MenuResidence extends StatelessWidget {
-  final ResidenceModel residence;
-  const MenuResidence({super.key, required this.residence});
+  final ResidenceContextModel contextModel;
+  const MenuResidence({super.key, required this.contextModel});
 
   @override
   Widget build(BuildContext context) {
+    final residence = contextModel.residence;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -78,7 +79,7 @@ class MenuResidence extends StatelessWidget {
                     onTap:
                         () => context.push(
                           '/profile/my_residence/menu_residence/${residence.id}/reservation_history',
-                          extra: residence,
+                          extra: contextModel,
                         ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

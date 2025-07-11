@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'dart:ui';
-
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 
 class MyResidenceCard extends StatelessWidget {
@@ -41,7 +41,9 @@ class MyResidenceCard extends StatelessWidget {
               {
                 context.push(
                   '/profile/my_residence/menu_residence/${residence.id}',
-                  extra: residence,
+                  extra: ResidenceContextModel(
+                    residence: residence,
+                  ),
                 ),
               },
           },

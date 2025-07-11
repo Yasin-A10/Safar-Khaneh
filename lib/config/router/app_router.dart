@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/data/models/booked_residence_model.dart';
 import 'package:safar_khaneh/data/models/my_residence_model.dart';
-import 'package:safar_khaneh/data/models/vendor_reservation_model.dart';
 import 'package:safar_khaneh/features/auth/presentation/forgot_password_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.dart';
-
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_success_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/verify_email_screen.dart';
+import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
+import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/edit_residence_detail_screen.dart';
@@ -98,16 +97,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.menuResidence,
       builder: (context, state) {
-        final residence = state.extra as ResidenceModel;
-        return MenuResidence(residence: residence);
+        final contextModel = state.extra as ResidenceContextModel;
+        return MenuResidence(contextModel: contextModel);
       },
     ),
 
     GoRoute(
       path: RoutePaths.bookingDetails,
       builder: (context, state) {
-        final residence = state.extra as BookedResidenceModel;
-        return BookingDetailsScreen(residence: residence);
+        final reservation = state.extra as UserReservationModel;
+        return BookingDetailsScreen(reservation: reservation);
       },
     ),
     GoRoute(
@@ -125,8 +124,8 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.reservationHistory,
       builder: (context, state) {
-        final residence = state.extra as MyResidenceModel;
-        return ReservationHistoryScreen(residence: residence);
+        final contextModel = state.extra as ResidenceContextModel;
+        return ReservationHistoryScreen(contextModel: contextModel);
       },
     ),
     GoRoute(
@@ -223,4 +222,18 @@ class CheckoutArguments {
   final CheckoutPriceModel calculationResult;
 
   CheckoutArguments({required this.residence, required this.calculationResult});
+}
+
+class ResidenceContextModel {
+  final ResidenceModel residence;
+  final VendorReservationModel? reservations;
+  // final TransactionModel? transaction;
+  // final CommentModel? comments;
+
+  ResidenceContextModel({
+    required this.residence,
+    this.reservations,
+    // this.transaction,
+    // this.comments,
+  });
 }
