@@ -5,7 +5,7 @@ import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/features/profile/data/profile_model.dart';
+// import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/data/profile_services.dart';
 import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/data/reservation_create_service.dart';
@@ -28,21 +28,23 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
+  final ProfileService _walletService = ProfileService();
   final ReservationCreateService _reservationCreateService =
       ReservationCreateService();
-  final ProfileService _walletService = ProfileService();
-  late Future<ProfileModel> _futureProfile;
   int _walletBalance = 0;
+
+  Future<void> _loadProfile() async {
+    final profile = await _walletService.fetchProfile();
+    setState(() {
+      _walletBalance = profile.walletBalance;
+    });
+    print('wallet balance: $_walletBalance');
+  }
 
   @override
   void initState() {
     super.initState();
-    _futureProfile = _walletService.fetchProfile();
-    _futureProfile.then((value) {
-      setState(() {
-        _walletBalance = value.walletBalance;
-      });
-    });
+    _loadProfile();
   }
 
   String _selectedMethod = 'wallet';
@@ -80,7 +82,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 duration: const Duration(seconds: 3),
               ),
             );
-            context.go('/my_bookings');
+            GoRouter.of(navigatorKey.currentContext!).go('/my_bookings');
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -102,10 +104,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             );
           }
         } else if (_selectedMethod == 'online') {
-          final canLaunch = await canLaunchUrlString(response['url']);
+          final canLaunch = await canLaunchUrlString(response['pay_url']);
           if (canLaunch) {
             await launchUrlString(
-              response['url'],
+              response['pay_url'],
               mode: LaunchMode.externalApplication,
             );
           } else {
@@ -139,7 +141,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          content: Text(e.toString(), textDirection: TextDirection.rtl),
+          content: Text('خطایی رخ داده است ${e.toString()}'),
           backgroundColor: AppColors.error200,
           duration: const Duration(seconds: 3),
         ),

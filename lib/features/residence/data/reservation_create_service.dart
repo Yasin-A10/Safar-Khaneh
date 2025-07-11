@@ -27,6 +27,7 @@ class ReservationCreateService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return {
           'status': 'success',
+          'pay_url': response.data['pay_url'],
           'message': 'رمز عبور با موفقیت تغییر یافت',
         };
       } else {
