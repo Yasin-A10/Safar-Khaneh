@@ -72,41 +72,40 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
             duration: const Duration(seconds: 3),
           ),
         );
-        return;
+      } else {
+        final result = await reservationCalculateService.calculatePrice(
+          discountCode:
+              discountCodeController.text.isNotEmpty
+                  ? discountCodeController.text
+                  : '',
+          residenceId: residenceId,
+          checkIn: checkIn,
+          checkOut: checkOut,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'اطلاعات رزرو با موفقیت ثبت شد',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.success200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        GoRouter.of(navigatorKey.currentContext!).push(
+          '/residence/${widget.residence.id}/checkout',
+          extra: CheckoutArguments(
+            residence: widget.residence,
+            calculationResult: result,
+          ),
+        );
       }
-
-      final result = await reservationCalculateService.calculatePrice(
-        discountCode:
-            discountCodeController.text.isNotEmpty
-                ? discountCodeController.text
-                : '',
-        residenceId: residenceId,
-        checkIn: checkIn,
-        checkOut: checkOut,
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          content: Text(
-            'اطلاعات رزرو با موفقیت ثبت شد',
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: AppColors.success200,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-      GoRouter.of(navigatorKey.currentContext!).push(
-        '/residence/${widget.residence.id}/checkout',
-        extra: CheckoutArguments(
-          residence: widget.residence,
-          calculationResult: result,
-        ),
-      );
     } catch (e) {
       ScaffoldMessenger.of(
         context,
