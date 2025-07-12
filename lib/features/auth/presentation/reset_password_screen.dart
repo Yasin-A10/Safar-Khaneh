@@ -94,16 +94,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               child: Column(
                 children: [
                   Text(
-                    'بیا وارد برنامه بشیم',
+                    'انتخاب رمز جدید',
                     style: TextStyle(
                       color: AppColors.grey900,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
-                    'از این که ما را انتخاب کردید بسیار خوشحالیم',
+                    'رمز جدید خودت رو بنویس و فراموش نکن',
                     style: TextStyle(color: AppColors.grey500, fontSize: 16),
                   ),
                   const SizedBox(height: 24),
@@ -119,7 +119,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         const SizedBox(height: 24),
                         Button(
-                          label: 'تغییر رمز',
+                          label: 'تایید',
                           onPressed: () {
                             _handleResetPassword(context);
                           },

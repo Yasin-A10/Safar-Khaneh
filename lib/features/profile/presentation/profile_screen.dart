@@ -252,8 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   keyboardType:
                                                       TextInputType.number,
                                                   validator: (value) {
-                                                    return AppValidator
-                                                        .price(
+                                                    return AppValidator.price(
                                                       value,
                                                     );
                                                   },
@@ -353,6 +352,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppColors.grey700,
                         ),
                       ),
+                      const Spacer(),
+                      const Icon(
+                        Iconsax.arrow_left_2,
+                        color: AppColors.grey600,
+                      ),
                     ],
                   ),
                 ),
@@ -372,6 +376,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontWeight: FontWeight.w500,
                           color: AppColors.grey700,
                         ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Iconsax.arrow_left_2,
+                        color: AppColors.grey600,
                       ),
                     ],
                   ),
@@ -393,6 +402,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppColors.grey700,
                         ),
                       ),
+                      const Spacer(),
+                      const Icon(
+                        Iconsax.arrow_left_2,
+                        color: AppColors.grey600,
+                      ),
                     ],
                   ),
                 ),
@@ -413,6 +427,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontWeight: FontWeight.w500,
                           color: AppColors.grey700,
                         ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Iconsax.arrow_left_2,
+                        color: AppColors.grey600,
                       ),
                     ],
                   ),

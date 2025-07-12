@@ -86,16 +86,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               child: Column(
                 children: [
                   Text(
-                    'بیا وارد برنامه بشیم',
+                    'ایمیل خود را وارد کنید',
                     style: TextStyle(
                       color: AppColors.grey900,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
-                    'از این که ما را انتخاب کردید بسیار خوشحالیم',
+                    'اصلا نگران نباش! رمزت جور میشه',
                     style: TextStyle(color: AppColors.grey500, fontSize: 16),
                   ),
                   const SizedBox(height: 24),
@@ -131,5 +131,3 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 }
-
-

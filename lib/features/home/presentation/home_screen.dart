@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+// import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/cards/most_popular_card.dart';
 import 'package:safar_khaneh/data/models/residence_card_model.dart';
 import 'package:safar_khaneh/widgets/footer.dart';
@@ -254,6 +256,14 @@ class HomeScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 40),
+              // Button(
+              //   label: 'جستجو',
+              //   onPressed: () {
+              //     context.go('/reset-password');
+              //   },
+              //   width: double.infinity,
+              // ),
+              // const SizedBox(height: 24),
               Column(
                 children: [
                   Padding(

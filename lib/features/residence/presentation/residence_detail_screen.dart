@@ -11,6 +11,7 @@ import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
 import 'package:safar_khaneh/widgets/map.dart';
 import 'package:safar_khaneh/widgets/comment_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final List<CommentModel> comments = [
   CommentModel(
@@ -68,6 +69,29 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     textController.dispose();
     ratingController.dispose();
     super.dispose();
+  }
+
+  void _handlePhone(context) async {
+    final phone = widget.residence.owner?.phoneNumber.toString();
+    if (phone != null) {
+      final Uri phoneUri = Uri(scheme: 'tel', path: phone);
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text('متاسفانه امکان تماس با این شماره وجود ندارد'),
+            backgroundColor: AppColors.error200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   void _handleBookmark(context) async {
@@ -434,7 +458,30 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(width: 8),
+                                        SizedBox(
+                                          width: 79,
+                                          height: 30,
+                                          child: OutlinedButton(
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor:
+                                                  AppColors.primary800,
+                                              backgroundColor: AppColors.white,
+                                              side: BorderSide(
+                                                color: AppColors.primary800,
+                                              ),
+                                            ),
+                                            child: const Text(
+                                              'تماس',
+                                              style: TextStyle(
+                                                color: AppColors.primary800,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              _handlePhone(context);
+                                            },
+                                          ),
+                                        ),
                                         Text(
                                           formatNumberToPersianWithoutSeparator(
                                             widget

@@ -38,7 +38,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     setState(() {
       _walletBalance = profile.walletBalance;
     });
-    print('wallet balance: $_walletBalance');
   }
 
   @override
@@ -53,10 +52,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _handleCheckout(context) async {
     try {
       final response = await _reservationCreateService.createReservation(
-        discountCode:
-            widget.calculationResult.discountCode!.isNotEmpty
-                ? widget.calculationResult.discountCode!
-                : '',
+        discountCode: widget.calculationResult.discountCode ?? '',
         residenceId: widget.residence.id!,
         checkIn: widget.calculationResult.checkIn!,
         checkOut: widget.calculationResult.checkOut!,
@@ -144,7 +140,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          content: Text('خطایی رخ داده است ${e.toString()}'),
+          content: Text('موجودی کیف پول کافی نیست'),
           backgroundColor: AppColors.error200,
           duration: const Duration(seconds: 3),
         ),

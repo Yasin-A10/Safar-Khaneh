@@ -38,13 +38,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('ثبت‌نام با موفقیت انجام شد'),),
+          const SnackBar(content: Text('ثبت‌نام با موفقیت انجام شد')),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -74,8 +74,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Image.asset(
                 'assets/logo/SAFAR-KHANEH.png',
-                height: 250,
-                width: 500,
+                height: 220,
+                width: 900,
               ),
               Column(
                 children: [
@@ -87,6 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 16),
                   Text(
                     'از این که ما را انتخاب کردید بسیار خوشحالیم',
                     style: TextStyle(
@@ -107,24 +108,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _nameController,
                         label: 'نام کاربری',
                         keyboardType: TextInputType.text,
-                        validator: (value) => AppValidator.userName(value, fieldName: 'نام کاربری'),
+                        validator:
+                            (value) => AppValidator.userName(
+                              value,
+                              fieldName: 'نام کاربری',
+                            ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       InputTextFormField(
                         controller: _emailController,
                         label: 'ایمیل',
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => AppValidator.email(value, fieldName: 'ایمیل'),
+                        validator:
+                            (value) =>
+                                AppValidator.email(value, fieldName: 'ایمیل'),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       InputTextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         maxLines: 1,
                         label: 'رمز عبور',
-                        validator: (value) => AppValidator.password(value, fieldName: 'رمز عبور'),
+                        validator:
+                            (value) => AppValidator.password(
+                              value,
+                              fieldName: 'رمز عبور',
+                            ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 16),
                       Button(
                         label: _isLoading ? 'لطفاً صبر کنید...' : 'ثبت‌نام',
                         isLoading: _isLoading,

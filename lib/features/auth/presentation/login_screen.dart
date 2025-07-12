@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final token = response['access'];
       final refreshToken = response['refresh'];
-      
+
       if (token != null && refreshToken != null) {
         await TokenStorage.saveTokens(
           accessToken: token,
@@ -103,14 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Text(
-                    'بیا وارد برنامه بشیم',
+                    'ورود به حساب کاربری',
                     style: TextStyle(
                       color: AppColors.grey900,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 24),
                   Text(
                     'از این که ما را انتخاب کردید بسیار خوشحالیم',
                     style: TextStyle(color: AppColors.grey500, fontSize: 16),
@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) => AppValidator.email(value),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
                         InputTextFormField(
                           controller: _passwordController,
                           obscureText: true,
@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'حساب کاربری ندارید؟',
-                        style: TextStyle(color: AppColors.grey500),
+                        style: TextStyle(color: AppColors.grey600),
                       ),
                       TextButton(
                         onPressed: () => context.go('/register'),
@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'رمز عبور را فراموش کرده اید؟',
-                        style: TextStyle(color: AppColors.grey500),
+                        style: TextStyle(color: AppColors.grey600),
                       ),
                       TextButton(
                         onPressed: () => context.go('/forgot-password'),
