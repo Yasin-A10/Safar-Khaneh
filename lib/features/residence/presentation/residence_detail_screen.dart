@@ -6,6 +6,7 @@ import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/models/comment_model.dart';
 import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
+import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
@@ -45,8 +46,13 @@ final List<CommentModel> comments = [
 
 class ResidenceDetailScreen extends StatefulWidget {
   final ResidenceModel residence;
+  final BookmarkedResidenceModel? bookmark;
 
-  const ResidenceDetailScreen({super.key, required this.residence});
+  const ResidenceDetailScreen({
+    super.key,
+    required this.residence,
+    this.bookmark,
+  });
 
   @override
   State<ResidenceDetailScreen> createState() => _ResidenceDetailScreenState();
@@ -57,11 +63,19 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
   final TextEditingController ratingController = TextEditingController();
   final BookmarkService _bookmarkService = BookmarkService();
 
+  int? _bookmarkId;
+
   @override
   void initState() {
     super.initState();
     textController.text = '';
     ratingController.text = '';
+
+    /// اگر از ابتدا بوکمارک داشت، آی‌دی اون رو نگه می‌داریم
+    if (widget.bookmark != null) {
+      _bookmarkId = widget.bookmark!.id;
+      widget.residence.isBookmark = true;
+    }
   }
 
   @override
@@ -69,29 +83,6 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     textController.dispose();
     ratingController.dispose();
     super.dispose();
-  }
-
-  void _handlePhone(context) async {
-    final phone = widget.residence.owner?.phoneNumber.toString();
-    if (phone != null) {
-      final Uri phoneUri = Uri(scheme: 'tel', path: phone);
-      if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            content: Text('متاسفانه امکان تماس با این شماره وجود ندارد'),
-            backgroundColor: AppColors.error200,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    }
   }
 
   void _handleBookmark(context) async {
@@ -132,18 +123,28 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
       final isBookmarked = widget.residence.isBookmark ?? false;
 
       if (isBookmarked) {
-        await _bookmarkService.removeBookmark(widget.residence.id!);
+        if (_bookmarkId != null) {
+          await _bookmarkService.removeBookmark(_bookmarkId!);
+          setState(() {
+            widget.residence.isBookmark = false;
+            _bookmarkId = null;
+          });
+        }
       } else {
-        await _bookmarkService.addBookmark(widget.residence.id!);
-      }
+        final response = await _bookmarkService.addBookmark(
+          widget.residence.id!,
+        );
 
-      setState(() {
-        widget.residence.isBookmark = !isBookmarked;
-      });
+        final bookmarked = BookmarkedResidenceModel.fromJson(response);
+        setState(() {
+          widget.residence.isBookmark = true;
+          _bookmarkId = bookmarked.id;
+        });
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
+          content: const Text(
             'خطا در تغییر وضعیت بوکمارک. دوباره تلاش کنید.',
             textDirection: TextDirection.rtl,
           ),
@@ -153,56 +154,28 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     }
   }
 
-  // void _handleBookmark(context) async {
-  //   final hasRefreshToken = await TokenStorage.hasRefreshToken();
-
-  //   if (hasRefreshToken) {
-  //     try {
-  //       await _bookmarkService.addBookmark(widget.residence.id!);
-  //       setState(() {
-  //         widget.residence.isBookmark = !(widget.residence.isBookmark ?? false);
-  //       });
-  //     } catch (e) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(
-  //             'خطا در ثبت بوکمارک. دوباره تلاش کنید.',
-  //             textDirection: TextDirection.rtl,
-  //           ),
-  //           backgroundColor: AppColors.error200,
-  //         ),
-  //       );
-  //     }
-  //   } else {
-  //     showDialog(
-  //       context: context,
-  //       builder:
-  //           (context) => Directionality(
-  //             textDirection: TextDirection.rtl,
-  //             child: AlertDialog(
-  //               title: const Text('ورود به حساب'),
-  //               content: const Text('ابتدا وارد حساب کاربری خود شوید.'),
-  //               actions: [
-  //                 TextButton(
-  //                   onPressed: () => context.pop(),
-  //                   child: const Text(
-  //                     'انصراف',
-  //                     style: TextStyle(color: AppColors.error200),
-  //                   ),
-  //                 ),
-  //                 ElevatedButton(
-  //                   onPressed: () => context.go('/login'),
-  //                   child: const Text(
-  //                     'ورود',
-  //                     style: TextStyle(color: AppColors.primary800),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //     );
-  //   }
-  // }
+  void _handlePhone(context) async {
+    final phone = widget.residence.owner?.phoneNumber.toString();
+    if (phone != null) {
+      final Uri phoneUri = Uri(scheme: 'tel', path: phone);
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text('متاسفانه امکان تماس با این شماره وجود ندارد'),
+            backgroundColor: AppColors.error200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
 
   void showCommentDialog(BuildContext context) {
     showDialog(

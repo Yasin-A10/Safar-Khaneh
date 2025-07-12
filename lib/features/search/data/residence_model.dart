@@ -71,7 +71,7 @@ class ResidenceModel {
       });
     }
     isActive = json['is_active'];
-    isBookmark = json['is_bookmark'];
+    isBookmark = json['is_bookmarked'];
   }
 
   Map<String, dynamic> toJson() {
@@ -101,7 +101,7 @@ class ResidenceModel {
       data['features'] = this.features!.map((v) => v.toJson()).toList();
     }
     data['is_active'] = this.isActive;
-    data['is_bookmark'] = this.isBookmark;
+    data['is_bookmarked'] = this.isBookmark;
     return data;
   }
 }
