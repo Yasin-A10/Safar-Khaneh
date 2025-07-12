@@ -8,6 +8,7 @@ class CheckoutPriceModel {
   final int? priceForNights;
   final num? price;
   final num? discountValue;
+  final String? discountCode;
   final num? finalPrice;
 
   CheckoutPriceModel({
@@ -20,6 +21,7 @@ class CheckoutPriceModel {
     this.priceForNights,
     this.price,
     this.discountValue,
+    this.discountCode,
     this.finalPrice,
   });
 
@@ -34,6 +36,7 @@ class CheckoutPriceModel {
       priceForNights: json['price_for_nights'] as int?,
       price: json['price'] as num?,
       discountValue: json['discount_value'] as num?,
+      discountCode: json['discount_code'] as String?,
       finalPrice: json['final_price'] as num?,
     );
   }
@@ -49,6 +52,7 @@ class CheckoutPriceModel {
       'price_for_nights': priceForNights,
       'price': price,
       'discount_value': discountValue,
+      'discount_code': discountCode,
       'final_price': finalPrice,
     };
   }

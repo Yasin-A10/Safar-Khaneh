@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/models/comment_model.dart';
+import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_field.dart';
@@ -52,6 +54,7 @@ class ResidenceDetailScreen extends StatefulWidget {
 class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
   final TextEditingController textController = TextEditingController();
   final TextEditingController ratingController = TextEditingController();
+  final BookmarkService _bookmarkService = BookmarkService();
 
   @override
   void initState() {
@@ -66,6 +69,116 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     ratingController.dispose();
     super.dispose();
   }
+
+  void _handleBookmark(context) async {
+    final hasRefreshToken = await TokenStorage.hasRefreshToken();
+
+    if (!hasRefreshToken) {
+      showDialog(
+        context: context,
+        builder:
+            (context) => Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: const Text('ورود به حساب'),
+                content: const Text('ابتدا وارد حساب کاربری خود شوید.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text(
+                      'انصراف',
+                      style: TextStyle(color: AppColors.error200),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => context.go('/login'),
+                    child: const Text(
+                      'ورود',
+                      style: TextStyle(color: AppColors.primary800),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+      );
+      return;
+    }
+
+    try {
+      final isBookmarked = widget.residence.isBookmark ?? false;
+
+      if (isBookmarked) {
+        await _bookmarkService.removeBookmark(widget.residence.id!);
+      } else {
+        await _bookmarkService.addBookmark(widget.residence.id!);
+      }
+
+      setState(() {
+        widget.residence.isBookmark = !isBookmarked;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'خطا در تغییر وضعیت بوکمارک. دوباره تلاش کنید.',
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: AppColors.error200,
+        ),
+      );
+    }
+  }
+
+  // void _handleBookmark(context) async {
+  //   final hasRefreshToken = await TokenStorage.hasRefreshToken();
+
+  //   if (hasRefreshToken) {
+  //     try {
+  //       await _bookmarkService.addBookmark(widget.residence.id!);
+  //       setState(() {
+  //         widget.residence.isBookmark = !(widget.residence.isBookmark ?? false);
+  //       });
+  //     } catch (e) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //             'خطا در ثبت بوکمارک. دوباره تلاش کنید.',
+  //             textDirection: TextDirection.rtl,
+  //           ),
+  //           backgroundColor: AppColors.error200,
+  //         ),
+  //       );
+  //     }
+  //   } else {
+  //     showDialog(
+  //       context: context,
+  //       builder:
+  //           (context) => Directionality(
+  //             textDirection: TextDirection.rtl,
+  //             child: AlertDialog(
+  //               title: const Text('ورود به حساب'),
+  //               content: const Text('ابتدا وارد حساب کاربری خود شوید.'),
+  //               actions: [
+  //                 TextButton(
+  //                   onPressed: () => context.pop(),
+  //                   child: const Text(
+  //                     'انصراف',
+  //                     style: TextStyle(color: AppColors.error200),
+  //                   ),
+  //                 ),
+  //                 ElevatedButton(
+  //                   onPressed: () => context.go('/login'),
+  //                   child: const Text(
+  //                     'ورود',
+  //                     style: TextStyle(color: AppColors.primary800),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //     );
+  //   }
+  // }
 
   void showCommentDialog(BuildContext context) {
     showDialog(
@@ -130,19 +243,17 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: AppColors.white,
-          // leading: IconButton(
-          //   onPressed: () {
-          //     setState(() {
-          //       widget.residence.isFavorite = !widget.residence.isFavorite!;
-          //     });
-          //   },
-          //   icon: Icon(
-          //     widget.residence.isFavorite ?? false
-          //         ? Iconsax.heart5
-          //         : Iconsax.heart,
-          //     color: AppColors.primary800,
-          //   ),
-          // ),
+          leading: IconButton(
+            onPressed: () {
+              _handleBookmark(context);
+            },
+            icon: Icon(
+              widget.residence.isBookmark ?? false
+                  ? Iconsax.heart5
+                  : Iconsax.heart,
+              color: AppColors.primary800,
+            ),
+          ),
           title: const Text('اطلاعات اقامتگاه'),
           actions: [
             IconButton(

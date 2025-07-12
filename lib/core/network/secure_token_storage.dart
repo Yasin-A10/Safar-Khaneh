@@ -48,4 +48,11 @@ class TokenStorage {
     }
     return true;
   }
+  static Future<bool> hasRefreshToken() async {
+    final refreshToken = await getRefreshToken();
+    if (refreshToken == null) {
+      return false;
+    }
+    return true;
+  }
 }

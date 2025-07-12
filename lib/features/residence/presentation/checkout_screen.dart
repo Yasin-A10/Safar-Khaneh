@@ -53,7 +53,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _handleCheckout(context) async {
     try {
       final response = await _reservationCreateService.createReservation(
-        discountCode: '',
+        discountCode:
+            widget.calculationResult.discountCode!.isNotEmpty
+                ? widget.calculationResult.discountCode!
+                : '',
         residenceId: widget.residence.id!,
         checkIn: widget.calculationResult.checkIn!,
         checkOut: widget.calculationResult.checkOut!,

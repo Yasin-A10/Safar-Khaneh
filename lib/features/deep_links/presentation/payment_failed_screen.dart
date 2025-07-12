@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/core/constants/colors.dart';
+import 'package:safar_khaneh/widgets/button.dart';
 
 class PaymentFailedScreen extends StatelessWidget {
   const PaymentFailedScreen({super.key});
@@ -7,24 +9,33 @@ class PaymentFailedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Image.asset(
+            'assets/images/Residences/failed_img.jpg',
+            width: 130,
+            height: 130,
+          ),
+          const SizedBox(height: 24),
           Center(
             child: Text(
               'پرداخت با شکست مواجه شد',
               style: TextStyle(
-                color: Colors.red,
+                color: AppColors.error200,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          ElevatedButton(
+          const SizedBox(height: 40),
+          Button(
             onPressed: () {
               context.go('/home');
             },
-            child: const Text('بازگشت به صفحه اصلی'),
+            label: 'بازگشت به صفحه اصلی',
+            backgroundColor: const Color.fromARGB(255, 143, 13, 13),
           ),
         ],
       ),

@@ -20,6 +20,7 @@ class ResidenceModel {
   Owner? owner;
   List<FeatureModel>? features;
   bool? isActive;
+  bool? isBookmark;
 
   ResidenceModel({
     this.id,
@@ -41,6 +42,7 @@ class ResidenceModel {
     this.owner,
     this.features,
     this.isActive,
+    this.isBookmark,
   });
 
   ResidenceModel.fromJson(Map<String, dynamic> json) {
@@ -69,6 +71,7 @@ class ResidenceModel {
       });
     }
     isActive = json['is_active'];
+    isBookmark = json['is_bookmark'];
   }
 
   Map<String, dynamic> toJson() {
@@ -98,6 +101,7 @@ class ResidenceModel {
       data['features'] = this.features!.map((v) => v.toJson()).toList();
     }
     data['is_active'] = this.isActive;
+    data['is_bookmark'] = this.isBookmark;
     return data;
   }
 }
