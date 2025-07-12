@@ -70,11 +70,30 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     super.initState();
     textController.text = '';
     ratingController.text = '';
+    _loadBookmarkStatus();
+  }
 
-    /// اگر از ابتدا بوکمارک داشت، آی‌دی اون رو نگه می‌داریم
-    if (widget.bookmark != null) {
-      _bookmarkId = widget.bookmark!.id;
-      widget.residence.isBookmark = true;
+  //*گرفتن لیست کل بوکمارک ها و تطبیقشون با اقامتگاه مربوطه
+  void _loadBookmarkStatus() async {
+    final hasToken = await TokenStorage.hasAccessToken();
+
+    if (!hasToken) return;
+
+    try {
+      final bookmarks = await _bookmarkService.fetchBookmarks();
+
+      final match = bookmarks.where(
+        (b) => b.residence.id == widget.residence.id,
+      );
+
+      if (match.isNotEmpty) {
+        setState(() {
+          _bookmarkId = match.first.id;
+          widget.residence.isBookmark = true;
+        });
+      }
+    } catch (e) {
+      return;
     }
   }
 

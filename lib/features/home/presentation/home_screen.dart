@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 // import 'package:safar_khaneh/widgets/button.dart';
-import 'package:safar_khaneh/widgets/cards/most_popular_card.dart';
+import 'package:safar_khaneh/widgets/cards/bookmark_card.dart';
 import 'package:safar_khaneh/data/models/residence_card_model.dart';
 import 'package:safar_khaneh/widgets/footer.dart';
 import 'package:safar_khaneh/widgets/search_bar.dart';
@@ -264,104 +264,104 @@ class HomeScreen extends StatelessWidget {
               //   width: double.infinity,
               // ),
               // const SizedBox(height: 24),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'محبوب ترین‌ها',
-                          style: TextStyle(
-                            fontFamily: 'Vazir',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'مشاهده همه',
-                            style: TextStyle(
-                              color: AppColors.primary800,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Vazir',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: residenceCardList.length,
-                      itemBuilder: (context, index) {
-                        final item = residenceCardList[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: MostPopularCard(residence: item),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'جدید ترین‌ها',
-                          style: TextStyle(
-                            fontFamily: 'Vazir',
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'مشاهده همه',
-                            style: TextStyle(
-                              color: AppColors.primary800,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Vazir',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 250,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: residenceCardList.length,
-                      itemBuilder: (context, index) {
-                        final item = residenceCardList[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: MostPopularCard(residence: item),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
+              // Column(
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.only(right: 12.0),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         children: [
+              //           const Text(
+              //             'محبوب ترین‌ها',
+              //             style: TextStyle(
+              //               fontFamily: 'Vazir',
+              //               fontSize: 18,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //           TextButton(
+              //             onPressed: () {},
+              //             child: const Text(
+              //               'مشاهده همه',
+              //               style: TextStyle(
+              //                 color: AppColors.primary800,
+              //                 fontSize: 12,
+              //                 fontWeight: FontWeight.w500,
+              //                 fontFamily: 'Vazir',
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(height: 8),
+              //     SizedBox(
+              //       height: 250,
+              //       child: ListView.builder(
+              //         scrollDirection: Axis.horizontal,
+              //         itemCount: residenceCardList.length,
+              //         itemBuilder: (context, index) {
+              //           final item = residenceCardList[index];
+              //           return Padding(
+              //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //             child: MostPopularCard(residence: item),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 24),
+              // Column(
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.only(right: 12.0),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         children: [
+              //           const Text(
+              //             'جدید ترین‌ها',
+              //             style: TextStyle(
+              //               fontFamily: 'Vazir',
+              //               fontSize: 18,
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //           TextButton(
+              //             onPressed: () {},
+              //             child: const Text(
+              //               'مشاهده همه',
+              //               style: TextStyle(
+              //                 color: AppColors.primary800,
+              //                 fontSize: 12,
+              //                 fontWeight: FontWeight.w500,
+              //                 fontFamily: 'Vazir',
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(height: 8),
+              //     SizedBox(
+              //       height: 250,
+              //       child: ListView.builder(
+              //         scrollDirection: Axis.horizontal,
+              //         itemCount: residenceCardList.length,
+              //         itemBuilder: (context, index) {
+              //           final item = residenceCardList[index];
+              //           return Padding(
+              //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              //             child: MostPopularCard(residence: item),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 40),
               FooterWidget(),
             ],
           ),

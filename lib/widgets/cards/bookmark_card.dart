@@ -2,25 +2,77 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/residence_card_model.dart';
+import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
+import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
+// import 'package:safar_khaneh/features/search/data/residence_model.dart';
 
-class MostPopularCard extends StatefulWidget {
-  final ResidenceCardModel residence;
+class BookmarkCard extends StatefulWidget {
+  final BookmarkedResidenceModel bookmark;
 
-  const MostPopularCard({super.key, required this.residence});
+  const BookmarkCard({super.key, required this.bookmark});
 
   @override
-  State<MostPopularCard> createState() => _MostPopularCardState();
+  State<BookmarkCard> createState() => _BookmarkCardState();
 }
 
-class _MostPopularCardState extends State<MostPopularCard> {
-  ResidenceCardModel get residence => widget.residence;
+class _BookmarkCardState extends State<BookmarkCard> {
+  BookmarkedResidenceModel get bookmark => widget.bookmark;
+
+  final BookmarkService _bookmarkService = BookmarkService();
+  int? _bookmarkId;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _bookmarkId = widget.bookmark.id;
+    });
+  }
+
+  void _handleBookmark(context) async {
+    try {
+      final isBookmarked = bookmark.residence.isBookmark;
+
+      if (isBookmarked == true) {
+        if (_bookmarkId != null) {
+          await _bookmarkService.removeBookmark(_bookmarkId!);
+          setState(() {
+            bookmark.residence.isBookmark = false;
+            _bookmarkId = null;
+          });
+        }
+      } else {
+        final response = await _bookmarkService.addBookmark(
+          bookmark.residence.id!,
+        );
+        final bookmarked = BookmarkedResidenceModel.fromJson(response);
+        setState(() {
+          bookmark.residence.isBookmark = true;
+          _bookmarkId = bookmarked.id;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'خطا در تغییر وضعیت بوکمارک. دوباره تلاش کنید.',
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: Colors.red.shade300,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('bookmark id : $_bookmarkId');
     return GestureDetector(
       onTap: () {
-        context.push('/residence/${residence.id}', extra: residence);
+        context.push(
+          '/residence/${bookmark.residence.id}',
+          extra: bookmark.residence,
+        );
       },
       child: Container(
         width: 180,
@@ -31,8 +83,8 @@ class _MostPopularCardState extends State<MostPopularCard> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset(
-                residence.backgroundImage,
+              Image.network(
+                bookmark.residence.imageUrl!,
                 fit: BoxFit.cover,
                 color: Colors.black.withValues(alpha: 0.3),
                 colorBlendMode: BlendMode.darken,
@@ -49,9 +101,7 @@ class _MostPopularCardState extends State<MostPopularCard> {
                       alignment: Alignment.topRight,
                       child: GestureDetector(
                         onTap: () {
-                          setState(() {
-                            residence.isFavorite = !residence.isFavorite!;
-                          });
+                          _handleBookmark(context);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(6),
@@ -60,7 +110,7 @@ class _MostPopularCardState extends State<MostPopularCard> {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            residence.isFavorite ?? false
+                            bookmark.residence.isBookmark ?? false
                                 ? Iconsax.heart5
                                 : Iconsax.heart,
                             color: Colors.red,
@@ -73,7 +123,7 @@ class _MostPopularCardState extends State<MostPopularCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          residence.title,
+                          bookmark.residence.title!,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -82,7 +132,7 @@ class _MostPopularCardState extends State<MostPopularCard> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${residence.city}, ${residence.province}',
+                          '${bookmark.residence.location!.city!.name}, ${bookmark.residence.location!.city!.province!.name}',
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.white,
@@ -110,7 +160,9 @@ class _MostPopularCardState extends State<MostPopularCard> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            formatNumberToPersian(widget.residence.price),
+                            formatNumberToPersian(
+                              bookmark.residence.pricePerNight!,
+                            ),
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -124,7 +176,7 @@ class _MostPopularCardState extends State<MostPopularCard> {
                           children: [
                             Text(
                               formatNumberToPersianWithoutSeparator(
-                                residence.rating,
+                                bookmark.residence.avgRating,
                               ),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -152,3 +204,29 @@ class _MostPopularCardState extends State<MostPopularCard> {
     );
   }
 }
+
+
+                    // Align(
+                    //   alignment: Alignment.topRight,
+                    //   child: GestureDetector(
+                    //     onTap: () {
+                    //       setState(() {
+                    //         residence.isFavorite = !residence.isFavorite!;
+                    //       });
+                    //     },
+                    //     child: Container(
+                    //       padding: const EdgeInsets.all(6),
+                    //       decoration: const BoxDecoration(
+                    //         color: Colors.white,
+                    //         shape: BoxShape.circle,
+                    //       ),
+                    //       child: Icon(
+                    //         residence.isFavorite ?? false
+                    //             ? Iconsax.heart5
+                    //             : Iconsax.heart,
+                    //         color: Colors.red,
+                    //         size: 18,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
