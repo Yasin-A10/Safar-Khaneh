@@ -136,13 +136,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           content: Text('موجودی کیف پول کافی نیست'),
+          action: SnackBarAction(
+            textColor: AppColors.error200,
+            backgroundColor: AppColors.white,
+            label: 'پروفایل',
+            onPressed: () {
+              GoRouter.of(navigatorKey.currentContext!).go('/profile');
+            },
+          ),
           backgroundColor: AppColors.error200,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 5),
         ),
       );
     }

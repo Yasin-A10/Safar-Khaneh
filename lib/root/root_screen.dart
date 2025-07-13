@@ -253,7 +253,13 @@ class _RootScreenState extends State<RootScreen> {
             else
               IconButton(
                 icon: const Icon(Iconsax.arrow_left),
-                onPressed: () => context.pop(),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/home');
+                  }
+                },
               ),
           ],
         ),

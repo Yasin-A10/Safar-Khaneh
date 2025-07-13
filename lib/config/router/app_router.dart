@@ -38,14 +38,26 @@ import '../../features/residence/presentation/residence_detail_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final List<String> publicRoutes = [
-  '/login',
-  '/register',
-  '/home',
-  '/search',
-  '/forgot-password',
-  '/reset-password',
-  '/verify-email',
+// final List<String> publicRoutes = [
+//   '/login',
+//   '/register',
+//   '/home',
+//   '/search',
+//   '/residence/:id'
+//   '/forgot-password',
+//   '/reset-password',
+//   '/verify-email',
+// ];
+
+final List<RegExp> publicRoutePatterns = [
+  RegExp(r'^/login$'),
+  RegExp(r'^/register$'),
+  RegExp(r'^/home$'),
+  RegExp(r'^/search$'),
+  RegExp(r'^/residence/\d+$'),
+  RegExp(r'^/forgot-password$'),
+  RegExp(r'^/reset-password$'),
+  RegExp(r'^/verify-email$'),
 ];
 
 final GoRouter appRouter = GoRouter(
@@ -205,12 +217,24 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 
+  // redirect: (context, state) async {
+  //   final isLoggedIn = await TokenStorage.hasAccessToken();
+  //   final isPublicRoute = publicRoutes.contains(state.matchedLocation);
+
+  //   if (!isLoggedIn && !isPublicRoute) return '/login';
+  //   if (isLoggedIn && state.matchedLocation == '/login') return '/login';
+  //   return null;
+  // },
   redirect: (context, state) async {
     final isLoggedIn = await TokenStorage.hasAccessToken();
-    final isPublicRoute = publicRoutes.contains(state.matchedLocation);
+    final currentPath = state.matchedLocation;
+
+    final isPublicRoute = publicRoutePatterns.any(
+      (pattern) => pattern.hasMatch(currentPath), // اصلاح اینجا
+    );
 
     if (!isLoggedIn && !isPublicRoute) return '/login';
-    if (isLoggedIn && state.matchedLocation == '/login') return '/login';
+    if (isLoggedIn && currentPath == '/login') return '/home';
     return null;
   },
 

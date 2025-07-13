@@ -75,7 +75,6 @@ class _SearchScreenState extends State<SearchScreen> {
       features = await featureService.fetchFeatures();
     }
 
-    // اگر لیست استان‌ها خالیه، یکبار واکشی کن
     if (provinces.isEmpty) {
       provinces = await geoService.fetchProvinces();
     }
@@ -397,67 +396,76 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _futureResidences = _residenceService.fetchResidences();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Container(
-          color: AppColors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        _showFilterModal();
-                      },
-                      icon: const Icon(Iconsax.filter),
-                    ),
-                    Expanded(
-                      child: CustomSearchBar(
-                        onSearch: _handleSearch,
-                        hintText: 'جستجو...',
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                FutureBuilder(
-                  future: _futureResidences,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-                    if (snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text('هیچ اقامتگاهی یافت نشد'),
-                      );
-                    }
-                    final residences = snapshot.data ?? [];
-                    return Expanded(
-                      child: ListView.builder(
-                        itemCount: residences.length,
-                        itemBuilder: (context, index) {
-                          final item = residences[index];
-                          return Column(
-                            children: [
-                              SimpleResidenceCard(residence: item),
-                              const SizedBox(height: 16),
-                            ],
-                          );
+        child: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: Container(
+            color: AppColors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _showFilterModal();
                         },
+                        icon: const Icon(Iconsax.filter),
                       ),
-                    );
-                  },
-                ),
-              ],
+                      Expanded(
+                        child: CustomSearchBar(
+                          onSearch: _handleSearch,
+                          hintText: 'جستجو...',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  FutureBuilder(
+                    future: _futureResidences,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
+                      if (snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text('هیچ اقامتگاهی یافت نشد'),
+                        );
+                      }
+                      final residences = snapshot.data ?? [];
+                      return Expanded(
+                        child: ListView.builder(
+                          itemCount: residences.length,
+                          itemBuilder: (context, index) {
+                            final item = residences[index];
+                            return Column(
+                              children: [
+                                SimpleResidenceCard(residence: item),
+                                const SizedBox(height: 16),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

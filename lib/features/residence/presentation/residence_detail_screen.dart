@@ -121,16 +121,10 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                     onPressed: () => context.pop(),
                     child: const Text(
                       'انصراف',
-                      style: TextStyle(color: AppColors.error200),
+                      style: TextStyle(color: AppColors.error200, fontSize: 16),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: () => context.go('/login'),
-                    child: const Text(
-                      'ورود',
-                      style: TextStyle(color: AppColors.primary800),
-                    ),
-                  ),
+                  Button(onPressed: () => context.go('/login'), label: 'ورود'),
                 ],
               ),
             ),

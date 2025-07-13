@@ -18,6 +18,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
 
   late Future<List<BookmarkedResidenceModel>> _futureBookmark;
 
+  Future<void> _handleRefresh() async {
+    setState(() {
+      _futureBookmark = _bookmarkService.fetchBookmarks();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,43 +46,53 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
             ),
           ],
         ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: FutureBuilder(
-            future: _futureBookmark,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-              if (snapshot.data!.isEmpty || snapshot.data == null) {
-                return const Center(child: Text('هیچ اقامتگاهی یافت نشد'));
-              }
-              final bookmarks = snapshot.data ?? [];
-              return Column(
-                children: [
-                  Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: bookmarks.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // یعنی ۲ آیتم در هر ردیف
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio:
-                            0.8, // نسبت طول به عرض آیتم (بسته به طراحی تو تنظیم کن)
+        body: RefreshIndicator(
+          onRefresh: _handleRefresh,
+          triggerMode: RefreshIndicatorTriggerMode.onEdge,
+          color: AppColors.primary800,
+          backgroundColor: AppColors.white,
+          elevation: 1,
+          edgeOffset: 10,
+          strokeWidth: 2.5,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: FutureBuilder(
+              future: _futureBookmark,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (snapshot.data!.isEmpty || snapshot.data == null) {
+                  return const Center(child: Text('هیچ اقامتگاهی یافت نشد'));
+                }
+                final bookmarks = snapshot.data ?? [];
+                return Column(
+                  children: [
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: bookmarks.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // یعنی ۲ آیتم در هر ردیف
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio:
+                                  0.8, // نسبت طول به عرض آیتم (بسته به طراحی تو تنظیم کن)
+                            ),
+                        itemBuilder: (context, index) {
+                          final item = bookmarks[index];
+                          return BookmarkCard(bookmark: item);
+                        },
                       ),
-                      itemBuilder: (context, index) {
-                        final item = bookmarks[index];
-                        return BookmarkCard(bookmark: item);
-                      },
                     ),
-                  ),
-                ],
-              );
-            },
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
