@@ -66,7 +66,6 @@ class _BookmarkCardState extends State<BookmarkCard> {
 
   @override
   Widget build(BuildContext context) {
-    print('bookmark id : $_bookmarkId');
     return GestureDetector(
       onTap: () {
         context.push(
@@ -83,13 +82,16 @@ class _BookmarkCardState extends State<BookmarkCard> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(
-                bookmark.residence.imageUrl!,
-                fit: BoxFit.cover,
-                color: Colors.black.withValues(alpha: 0.3),
-                colorBlendMode: BlendMode.darken,
-                cacheWidth: 180,
-                cacheHeight: 250,
+              Hero(
+                tag: bookmark.residence.id!,
+                child: Image.network(
+                  bookmark.residence.imageUrl!,
+                  fit: BoxFit.cover,
+                  color: Colors.black.withValues(alpha: 0.3),
+                  colorBlendMode: BlendMode.darken,
+                  cacheWidth: 180,
+                  cacheHeight: 250,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),

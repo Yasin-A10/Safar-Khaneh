@@ -35,16 +35,13 @@ class _SimpleResidenceCardState extends State<SimpleResidenceCard> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Hero(
-                  tag: residence.id.toString(),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      residence.imageUrl!,
-                      fit: BoxFit.cover,
-                      height: 100,
-                      width: 100,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    residence.imageUrl!,
+                    fit: BoxFit.cover,
+                    height: 100,
+                    width: 100,
                   ),
                 ),
                 const SizedBox(width: 12),

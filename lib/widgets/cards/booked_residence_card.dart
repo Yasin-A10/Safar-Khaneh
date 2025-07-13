@@ -29,13 +29,16 @@ class BookedResidenceCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                reservation.residence!.imageUrl!,
-                fit: BoxFit.cover,
-                height: 165,
-                width: 100,
+            Hero(
+              tag: 'bookedResidence-${reservation.id}',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  reservation.residence!.imageUrl!,
+                  fit: BoxFit.cover,
+                  height: 165,
+                  width: 100,
+                ),
               ),
             ),
             const SizedBox(width: 12),

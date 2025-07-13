@@ -49,13 +49,16 @@ class ReservationHistoryDetailScreen extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            vendorReservation.residence!.imageUrl!,
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
+                        Hero(
+                          tag: 'vendorReservation-${vendorReservation.id}',
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              vendorReservation.residence!.imageUrl!,
+                              fit: BoxFit.cover,
+                              height: 100,
+                              width: 100,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),

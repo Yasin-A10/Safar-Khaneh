@@ -285,7 +285,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Hero(
-                    tag: widget.residence.id.toString(),
+                    tag: widget.residence.id!,
                     child: Image.network(
                       widget.residence.imageUrl!,
                       width: MediaQuery.of(context).size.width,
