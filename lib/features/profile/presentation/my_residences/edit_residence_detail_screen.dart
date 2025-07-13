@@ -73,7 +73,6 @@ class _EditResidenceDetailScreenState extends State<EditResidenceDetailScreen> {
     try {
       final fetchedProvinces = await geoService.fetchProvinces();
 
-      // اگر selectedProvince از قبل مقدار دارد، شهرها را هم بگیر
       List<City> fetchedCities = [];
       if (widget.residence.location?.city?.province != null) {
         final provinceId = widget.residence.location!.city!.province!.id!;

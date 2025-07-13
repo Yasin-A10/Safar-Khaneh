@@ -230,7 +230,7 @@ final GoRouter appRouter = GoRouter(
     final currentPath = state.matchedLocation;
 
     final isPublicRoute = publicRoutePatterns.any(
-      (pattern) => pattern.hasMatch(currentPath), // اصلاح اینجا
+      (pattern) => pattern.hasMatch(currentPath),
     );
 
     if (!isLoggedIn && !isPublicRoute) return '/login';
