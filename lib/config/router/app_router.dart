@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/data/models/my_residence_model.dart';
+import 'package:safar_khaneh/trash/models/my_residence_model.dart';
 import 'package:safar_khaneh/features/auth/presentation/forgot_password_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
@@ -9,6 +9,7 @@ import 'package:safar_khaneh/features/deep_links/presentation/payment_success_sc
 import 'package:safar_khaneh/features/auth/presentation/verify_email_screen.dart';
 import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
+import 'package:safar_khaneh/features/profile/data/transaction_model.dart';
 import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
@@ -17,7 +18,7 @@ import 'package:safar_khaneh/features/profile/presentation/my_residences/menu_re
 import 'package:safar_khaneh/features/profile/presentation/my_residences/my_residences_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/reservation_history_detail.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/resevation_history_screen.dart';
-import 'package:safar_khaneh/features/profile/presentation/my_residences/transation_screen.dart';
+import 'package:safar_khaneh/features/profile/presentation/my_residences/transaction_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/personal_info_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/request_to_add_residence/request_to_add_residence_screen.dart';
 import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
@@ -152,7 +153,10 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: RoutePaths.transaction,
-      builder: (context, state) => const TransactionScreen(),
+      builder: (context, state) {
+        final contextModel = state.extra as ResidenceContextModel;
+        return TransactionScreen(contextModel: contextModel);
+      },
     ),
 
     GoRoute(
@@ -251,13 +255,15 @@ class CheckoutArguments {
 class ResidenceContextModel {
   final ResidenceModel residence;
   final VendorReservationModel? reservations;
-  // final TransactionModel? transaction;
+  final PayoutModel? payout;
+  // final TransactionModel? transactions;
   // final CommentModel? comments;
 
   ResidenceContextModel({
     required this.residence,
     this.reservations,
-    // this.transaction,
+    this.payout,
+    // required this.transactions,
     // this.comments,
   });
 }

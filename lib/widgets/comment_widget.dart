@@ -3,7 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/comment_model.dart';
+import 'package:safar_khaneh/trash/models/comment_model.dart';
 
 class CommentWidget extends StatelessWidget {
   final CommentModel comment;

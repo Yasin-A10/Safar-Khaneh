@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/data/models/comment_model.dart';
+import 'package:safar_khaneh/trash/models/comment_model.dart';
 import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
 import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';

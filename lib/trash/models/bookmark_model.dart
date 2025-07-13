@@ -1,4 +1,4 @@
-import 'package:safar_khaneh/data/models/residence_card_model.dart';
+import 'package:safar_khaneh/trash/models/residence_card_model.dart';
 
 class BookmarkModel {
   final String id;

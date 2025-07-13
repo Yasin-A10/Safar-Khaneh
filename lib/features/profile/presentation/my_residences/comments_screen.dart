@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:safar_khaneh/data/models/comment_model.dart';
-import 'package:safar_khaneh/data/models/my_residence_model.dart';
+import 'package:safar_khaneh/trash/models/comment_model.dart';
+import 'package:safar_khaneh/trash/models/my_residence_model.dart';
 import 'package:safar_khaneh/widgets/comment_widget.dart';
 
 final List<CommentModel> comments = [

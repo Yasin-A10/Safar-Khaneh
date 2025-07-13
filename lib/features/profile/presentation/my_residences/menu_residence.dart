@@ -115,6 +115,7 @@ class MenuResidence extends StatelessWidget {
                     onTap:
                         () => context.push(
                           '/profile/my_residence/menu_residence/${residence.id}/transaction',
+                          extra: contextModel,
                         ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

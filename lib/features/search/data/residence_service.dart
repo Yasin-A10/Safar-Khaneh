@@ -62,7 +62,6 @@ class ResidenceService {
   }) async {
     final hasToken = await TokenStorage.hasAccessToken();
 
-    // به جای استفاده از Object، از نوع مشترک BaseApiClient استفاده می‌کنیم
     final BaseApiClient dioClient = hasToken ? AuthApiClient() : ApiClient();
 
     try {
