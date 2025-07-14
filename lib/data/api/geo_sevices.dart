@@ -11,8 +11,7 @@ class GeoService {
       final List data = response.data;
       return data.map((item) => Province.fromJson(item)).toList();
     } catch (e) {
-      print('خطا در دریافت استان‌ها: $e');
-      rethrow;
+      throw Exception('خطا در دریافت استان‌ها: $e');
     }
   }
 
@@ -23,8 +22,7 @@ class GeoService {
       final List data = response.data;
       return data.map((item) => City.fromJson(item)).toList();
     } catch (e) {
-      print('خطا در دریافت شهرها: $e');
-      rethrow;
+      throw Exception('خطا در دریافت شهرها: $e');
     }
   }
 }
