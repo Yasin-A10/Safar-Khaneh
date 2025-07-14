@@ -13,12 +13,10 @@ class AuthApiClient implements BaseApiClient {
   factory AuthApiClient() {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'http://127.0.0.1:8000/api/',
+        baseUrl: 'http://127.0.0.1:8000/api/admin/',
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
-        headers: {
-          'Accept': 'application/json',
-        },
+        headers: {'Accept': 'application/json'},
       ),
     );
 
@@ -97,11 +95,7 @@ class AuthApiClient implements BaseApiClient {
     final response = await dio.post(
       'http://127.0.0.1:8000/api/auth/refresh_token/',
       data: {'refresh_token': refreshToken},
-      options: Options(
-        headers: {
-          'Accept': 'application/json',
-        },
-      ),
+      options: Options(headers: {'Accept': 'application/json'}),
     );
 
     if (response.statusCode == 200) {
