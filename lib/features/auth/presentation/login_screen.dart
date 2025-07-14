@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final LoginService _loginService = LoginService();
 
-  void _handleLogin() async {
+  void _handleLogin(context) async {
     if (!loginFormKey.currentState!.validate()) return;
 
     setState(() {
@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 24),
                         Button(
                           label: 'ورود',
-                          onPressed: _handleLogin,
+                          onPressed: () => _handleLogin(context),
                           width: double.infinity,
                           enabled: !_isLoading,
                           isLoading: _isLoading,
