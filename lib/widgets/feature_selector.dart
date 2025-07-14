@@ -86,7 +86,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/data/real-models/feature_model.dart';
+import 'package:safar_khaneh/data/models/feature_model.dart';
 
 class FeaturesSelector extends StatefulWidget {
   final List<FeatureModel> allFeatures;

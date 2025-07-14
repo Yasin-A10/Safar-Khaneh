@@ -1,4 +1,4 @@
-import 'package:safar_khaneh/data/real-models/feature_model.dart';
+import 'package:safar_khaneh/data/models/feature_model.dart';
 
 class ResidenceModel {
   int? id;

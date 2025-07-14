@@ -7,7 +7,7 @@ import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/data/api/feature_service.dart';
 import 'package:safar_khaneh/data/api/geo_sevices.dart';
-import 'package:safar_khaneh/data/real-models/feature_model.dart';
+import 'package:safar_khaneh/data/models/feature_model.dart';
 import 'package:safar_khaneh/features/profile/data/update_residence_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/feature_selector.dart';

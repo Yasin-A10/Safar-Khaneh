@@ -5,7 +5,7 @@ import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/api/feature_service.dart';
 import 'package:safar_khaneh/data/api/geo_sevices.dart';
-import 'package:safar_khaneh/data/real-models/feature_model.dart';
+import 'package:safar_khaneh/data/models/feature_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
