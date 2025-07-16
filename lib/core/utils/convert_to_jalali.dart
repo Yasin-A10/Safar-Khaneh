@@ -11,3 +11,14 @@ String convertToJalaliDate(String isoDateString) {
     return 'تاریخ نامعتبر';
   }
 }
+
+String convertToJalaliTime(String isoDateString) {
+  try {
+    final dateTime = DateTime.parse(isoDateString).toLocal();
+    final hour = dateTime.hour.toString().padLeft(2, '0');
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  } catch (e) {
+    return 'ساعت نامعتبر';
+  }
+}

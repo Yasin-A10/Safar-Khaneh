@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/data/service/chat_services.dart';
+import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
+import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/models/chat_model.dart';
-import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/data/service/chat_notification_service.dart';
+import 'package:safar_khaneh/data/service/chat_services.dart';
+import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
@@ -14,35 +19,110 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   final ChatService _chatService = ChatService();
-  late Future<List<ChatModel>> _futureChats;
+  final List<ChatModel> _chatList = [];
+  ChatNotificationWebSocketService? _wsService;
   int? _currentUserId;
+  bool _isLoading = true;
 
-  Future<int?> _getCurrentUserId() async {
-    final userId = await TokenStorage.getUserId();
-    return userId;
-  }
+  final Set<int> _roomsWithUnreadMessages = {};
 
   @override
   void initState() {
     super.initState();
-    _futureChats = _chatService.getChatRooms();
-    _loadCurrentUserId();
+    _loadUnreadRooms();
+    _initChatListAndSocket();
   }
 
-  Future<void> _loadCurrentUserId() async {
-    final userId = await _getCurrentUserId();
-    if (mounted) {
-      setState(() {
-        _currentUserId = userId;
-      });
+  Future<void> _loadUnreadRooms() async {
+    final saved = await loadUnreadRooms();
+    setState(() {
+      _roomsWithUnreadMessages.addAll(saved);
+    });
+  }
+
+  Future<void> _saveUnreadRooms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final ids = _roomsWithUnreadMessages.map((id) => id.toString()).toList();
+    await prefs.setStringList('unread_rooms', ids);
+  }
+
+  Future<Set<int>> loadUnreadRooms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final ids = prefs.getStringList('unread_rooms') ?? [];
+    return ids.map((id) => int.tryParse(id)).whereType<int>().toSet();
+  }
+
+  Future<void> _initChatListAndSocket() async {
+    final token = await TokenStorage.getAccessToken();
+    final userId = await TokenStorage.getUserId();
+
+    setState(() {
+      _currentUserId = userId;
+    });
+
+    try {
+      final initialChats = await _chatService.getChatRooms();
+      _chatList.addAll(initialChats);
+    } catch (e) {
+      debugPrint('خطا در دریافت چت‌ها: $e');
     }
+
+    _wsService = ChatNotificationWebSocketService(
+      onMessage: (data) async {
+        final roomId = data['room_id'];
+        final message = data['message'];
+        final fromUser = data['from_user'];
+        final createdAt = data['created_at'];
+
+        final index = _chatList.indexWhere((c) => c.id == roomId);
+        if (index != -1) {
+          final chat = _chatList[index];
+          _chatList[index] = chat.copyWithLastMessage(
+            message: message,
+            senderName: fromUser,
+            createdAt: createdAt,
+          );
+        } else {
+          _chatList.insert(
+            0,
+            ChatModel(
+              id: roomId,
+              user: ChatUserModel(id: _currentUserId!, fullName: fromUser),
+              residence: ResidenceModel(title: 'اقامتگاه نامشخص'),
+              createdAt: DateTime.parse(createdAt),
+            ),
+          );
+        }
+
+        if (fromUser != _currentUserId.toString()) {
+          _roomsWithUnreadMessages.add(roomId);
+          await _saveUnreadRooms();
+        }
+
+        setState(() {});
+      },
+    );
+
+    if (token != null) {
+      _wsService!.connect(token);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _wsService?.disconnect();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('چت ها'),
+        title: const Text('چت‌ها'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -51,59 +131,75 @@ class _ChatListScreenState extends State<ChatListScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
-          future: _futureChats,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else {
-              final chats = snapshot.data!;
-
-              return ListView.builder(
-                itemCount: chats.length,
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _chatList.isEmpty
+              ? const Center(child: Text('هیچ چتی یافت نشد.'))
+              : ListView.builder(
+                itemCount: _chatList.length,
                 itemBuilder: (context, index) {
-                  final chat = chats[index];
-                  return ListTile(
-                    title: Text(chat.residence.title!),
-                    subtitle: Text(
+                  final chat = _chatList[index];
+                  final receiverName =
                       _currentUserId == chat.residence.owner?.id
                           ? chat.user.fullName
-                          : chat.residence.owner!.fullName!,
-                    ),
+                          : chat.residence.owner?.fullName ?? 'نامشخص';
+
+                  return ListTile(
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.network(
-                        chat.residence.imageUrl!,
+                        chat.residence.imageUrl ?? '',
                         width: 70,
                         height: 70,
                         fit: BoxFit.cover,
+                        errorBuilder:
+                            (_, __, ___) =>
+                                const Icon(Icons.image_not_supported),
                       ),
                     ),
-                    // trailing: const Icon(Iconsax.arrow_left_2),
-                    onTap: () {
+                    title: Text(receiverName),
+                    subtitle: Text(chat.residence.title ?? 'بدون عنوان'),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          formatNumberToPersianWithoutSeparator(
+                            convertToJalaliTime(
+                              chat.createdAt.toIso8601String(),
+                            ),
+                          ),
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        if (_roomsWithUnreadMessages.contains(chat.id))
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                          ),
+                      ],
+                    ),
+                    onTap: () async {
+                      _roomsWithUnreadMessages.remove(chat.id);
+                      await _saveUnreadRooms();
+                      setState(() {});
+
                       context.push(
                         '/chat/${chat.id}',
                         extra: {
                           'roomId': chat.id,
-                          'receiverName':
-                              _currentUserId == chat.residence.owner?.id
-                                  ? chat.user.fullName
-                                  : chat.residence.owner!.fullName!,
+                          'receiverName': receiverName,
                           'currentUserId': _currentUserId,
                         },
                       );
                     },
                   );
                 },
-              );
-            }
-          },
-        ),
-      ),
+              ),
     );
   }
 }
