@@ -4,6 +4,7 @@ class TokenStorage {
   static const _accessTokenKey = 'access_token';
   static const _refreshTokenKey = 'refresh_token';
   static const _resetTokenKey = 'reset_token';
+  static const _userIdKey = 'user_id';
 
   static final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
@@ -21,12 +22,27 @@ class TokenStorage {
     // print('📦 refresh_token: $r');
   }
 
+  static Future<void> saveUserId(int userId) async {
+    await _storage.write(key: _userIdKey, value: userId.toString());
+  }
+
+  static Future<int?> getUserId() async {
+    final value = await _storage.read(key: _userIdKey);
+    return value != null ? int.tryParse(value) : null;
+  }
+
+  static Future<void> clearUserId() async {
+    await _storage.delete(key: _userIdKey);
+  }
+
   static Future<void> saveResetToken({required String token}) async {
     await _storage.write(key: _resetTokenKey, value: token);
   }
+
   static Future<String?> getResetToken() async {
     return await _storage.read(key: _resetTokenKey);
   }
+
   static Future<void> clearResetToken() async {
     await _storage.delete(key: _resetTokenKey);
   }
@@ -34,13 +50,16 @@ class TokenStorage {
   static Future<String?> getAccessToken() async {
     return await _storage.read(key: _accessTokenKey);
   }
+
   static Future<String?> getRefreshToken() async {
     return await _storage.read(key: _refreshTokenKey);
   }
+
   static Future<void> clearTokens() async {
     await _storage.delete(key: _accessTokenKey);
     await _storage.delete(key: _refreshTokenKey);
   }
+
   static Future<bool> hasAccessToken() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
@@ -48,6 +67,7 @@ class TokenStorage {
     }
     return true;
   }
+
   static Future<bool> hasRefreshToken() async {
     final refreshToken = await getRefreshToken();
     if (refreshToken == null) {

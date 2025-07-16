@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
@@ -37,12 +38,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final token = response['access'];
       final refreshToken = response['refresh'];
+      final userId = response['user']['id'];
 
-      if (token != null && refreshToken != null) {
+      if (token != null && refreshToken != null && userId != null) {
         await TokenStorage.saveTokens(
           accessToken: token,
           refreshToken: refreshToken,
         );
+        await TokenStorage.saveUserId(userId);
       }
 
       if (mounted) {
@@ -58,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
 
-        context.go('/home');
+        GoRouter.of(navigatorKey.currentContext!).go('/home');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

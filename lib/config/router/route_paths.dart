@@ -20,12 +20,15 @@ class RoutePaths {
   static const String bookingDetails = '/my_bookings/details/:id';
 
   static const String bookmark = '/profile/bookmark';
+  static const String chatList = '/profile/chat_list';
 
   static const String residenceDetail = '/residence/:id';
   static const String requestToBook = '/residence/:id/request_to_book';
   static const String checkout = '/residence/:id/checkout';
 
   static const String requestToAddResidence = '/profile/request_to_add_residence';
+
+  static const String chat = '/chat/:roomId';
 
   static const String paymentSuccess = '/payment-success';
   static const String paymentFailed = '/payment-failed';

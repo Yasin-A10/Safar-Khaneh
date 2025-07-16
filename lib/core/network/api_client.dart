@@ -11,7 +11,7 @@ class ApiClient implements BaseApiClient {
     final dio = Dio(
       BaseOptions(
         // baseUrl: 'http://10.0.2.2:8000/api/admin/', // for android
-        baseUrl: 'http://127.0.0.1:8000/api/admin/', // for ios
+        baseUrl: 'http://127.0.0.1:8000/api/', // for ios
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         headers: {'Accept': 'application/json'},

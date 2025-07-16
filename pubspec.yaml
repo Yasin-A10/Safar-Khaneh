@@ -50,6 +50,11 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_secure_storage: ^9.2.4
   app_links: ^6.4.0
+  web_socket_channel: ^3.0.3
+  flutter_chat_ui: ^2.7.0
+  flutter_chat_core: ^2.7.0
+  uuid: ^4.5.1
+  flutter_chat_types: ^3.6.2
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/data/service/chat_services.dart';
 import 'package:safar_khaneh/trash/models/comment_model.dart';
 import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
 import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
@@ -62,6 +63,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
   final TextEditingController textController = TextEditingController();
   final TextEditingController ratingController = TextEditingController();
   final BookmarkService _bookmarkService = BookmarkService();
+  final ChatService _chatService = ChatService();
 
   int? _bookmarkId;
 
@@ -245,6 +247,56 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     );
   }
 
+  void _handleChat(context) async {
+    final hasRefreshToken = await TokenStorage.hasRefreshToken();
+
+    if (!hasRefreshToken) {
+      showDialog(
+        context: context,
+        builder:
+            (context) => Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: const Text('ورود به حساب'),
+                content: const Text('ابتدا وارد حساب کاربری خود شوید.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text(
+                      'انصراف',
+                      style: TextStyle(color: AppColors.error200, fontSize: 16),
+                    ),
+                  ),
+                  Button(onPressed: () => context.go('/login'), label: 'ورود'),
+                ],
+              ),
+            ),
+      );
+      return;
+    }
+
+    try {
+      final roomData = await _chatService.createRoom(widget.residence.id!);
+      final roomId = roomData['room_id'];
+      final currentUserId = await TokenStorage.getUserId();
+      GoRouter.of(context).push(
+        '/chat/$roomId',
+        extra: {
+          'roomId': roomId,
+          'receiverName': widget.residence.owner?.fullName ?? 'نامشخص',
+          'currentUserId': currentUserId,
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('خطا : $e', textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -312,13 +364,40 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        widget.residence.title!,
-                                        style: TextStyle(
-                                          color: AppColors.grey900,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            widget.residence.title!,
+                                            style: TextStyle(
+                                              color: AppColors.grey900,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                formatNumberToPersianWithoutSeparator(
+                                                  widget.residence.avgRating
+                                                      .toString(),
+                                                ),
+                                                style: TextStyle(
+                                                  color: AppColors.grey800,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              const Icon(
+                                                Iconsax.star1,
+                                                color: AppColors.accentColor,
+                                                size: 24,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(height: 8),
                                       Row(
@@ -342,26 +421,37 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        formatNumberToPersianWithoutSeparator(
-                                          widget.residence.avgRating.toString(),
-                                        ),
-                                        style: TextStyle(
-                                          color: AppColors.grey800,
-                                          fontSize: 18,
-                                        ),
+                                  Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColors.primary800,
+                                        width: 2,
                                       ),
-                                      const SizedBox(width: 4),
-                                      const Icon(
-                                        Iconsax.star1,
-                                        color: AppColors.accentColor,
-                                        size: 24,
+                                      color: AppColors.white,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          offset: const Offset(0, -2),
+                                          blurRadius: 16,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Iconsax.message,
+                                        color: AppColors.primary800,
                                       ),
-                                    ],
+                                      onPressed: () {
+                                        _handleChat(context);
+                                      },
+                                      tooltip: 'شروع گفتگو',
+                                    ),
                                   ),
                                 ],
                               ),
@@ -787,7 +877,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 72),
+                              const SizedBox(height: 120),
                             ],
                           ),
                         ),
@@ -798,6 +888,37 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
               ),
             ),
 
+            // Positioned(
+            //   bottom: 100,
+            //   right: 16,
+            //   child: Container(
+            //     width: 56,
+            //     height: 56,
+            //     decoration: BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       border: Border.all(color: AppColors.primary800, width: 2),
+            //       color: AppColors.white,
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.black.withValues(alpha: 0.2),
+            //           offset: const Offset(0, -2),
+            //           blurRadius: 16,
+            //           spreadRadius: 2,
+            //         ),
+            //       ],
+            //     ),
+            //     child: IconButton(
+            //       icon: const Icon(
+            //         Iconsax.message,
+            //         color: AppColors.primary800,
+            //       ),
+            //       onPressed: () {
+            //         _handleChat(context);
+            //       },
+            //       tooltip: 'شروع گفتگو',
+            //     ),
+            //   ),
+            // ),
             Positioned(
               bottom: 0,
               left: 0,

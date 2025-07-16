@@ -389,6 +389,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const Divider(color: AppColors.grey200),
                 const SizedBox(height: 20),
                 InkWell(
+                  onTap: () => context.push('/profile/chat_list'),
+                  child: Row(
+                    children: [
+                      Icon(Iconsax.message_notif, color: AppColors.grey600),
+                      const SizedBox(width: 16),
+                      Text(
+                        'لیست چت‌ها',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.grey700,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Iconsax.arrow_left_2,
+                        color: AppColors.grey600,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Divider(color: AppColors.grey200),
+                const SizedBox(height: 20),
+                InkWell(
                   onTap: () => context.push('/profile/my_residence'),
                   child: Row(
                     children: [

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
+import 'package:safar_khaneh/features/profile/presentation/chat_list_screen.dart';
+import 'package:safar_khaneh/root/chat_screen.dart';
 import 'package:safar_khaneh/trash/models/my_residence_model.dart';
 import 'package:safar_khaneh/features/auth/presentation/forgot_password_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.dart';
@@ -173,8 +175,25 @@ final GoRouter appRouter = GoRouter(
     ),
 
     GoRoute(
+      path: RoutePaths.chatList,
+      builder: (context, state) => const ChatListScreen(),
+    ),
+
+    GoRoute(
       path: RoutePaths.requestToAddResidence,
       builder: (context, state) => const RequestToAddResidenceScreen(),
+    ),
+
+    GoRoute(
+      path: RoutePaths.chat,
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return ChatScreen(
+          roomId: data['roomId'],
+          receiverName: data['receiverName'],
+          currentUserId: data['currentUserId'],
+        );
+      },
     ),
 
     GoRoute(
