@@ -67,9 +67,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 itemCount: chats.length,
                 itemBuilder: (context, index) {
                   final chat = chats[index];
-                  print('user id: ${_currentUserId}');
-                  print('owner id: ${chat.residence.owner?.id}');
-                  print('user id: ${chat.user.id}');
                   return ListTile(
                     title: Text(chat.residence.title!),
                     subtitle: Text(
