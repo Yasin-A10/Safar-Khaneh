@@ -91,12 +91,26 @@ class _TransactionScreenState extends State<TransactionScreen> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('آیا از ارسال درخواست تسویه حساب مطمئن هستید؟'),
+                  const Text(
+                    'آیا از ارسال درخواست تسویه حساب مطمئن هستید؟',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.grey600,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('مبلغ کومیسیون'),
+                      const Text(
+                        'مبلغ کومیسیون',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary800,
+                        ),
+                      ),
                       Text(
                         '${formatNumberToPersian(payout.commission / 10)} تومان',
                         style: TextStyle(
@@ -111,7 +125,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('مبلغ قابل تسویه'),
+                      const Text(
+                        'مبلغ قابل تسویه',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary800,
+                        ),
+                      ),
                       Text(
                         '${formatNumberToPersian(payout.finalValue / 10)} تومان',
                         style: TextStyle(
@@ -129,7 +150,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
           actions: [
             TextButton(
               onPressed: () => context.pop(),
-              child: const Text('انصراف'),
+              child: const Text(
+                'انصراف',
+                style: TextStyle(color: AppColors.error200, fontSize: 16),
+              ),
             ),
             FutureBuilder<PayoutModel>(
               future: _payoutInfo,
@@ -210,7 +234,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           Padding(
                             padding: const EdgeInsets.only(right: 60.0),
                             child: Text(
-                              formatNumberToPersian(transaction.amount / 10),
+                              '${formatNumberToPersian(transaction.amount / 10)} تومان',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.grey700,
+                              ),
                             ),
                           ),
                           const Spacer(),

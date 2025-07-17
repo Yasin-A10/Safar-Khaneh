@@ -32,8 +32,10 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reservation = widget.contextModel.reservations;
     final residence = widget.contextModel.residence;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -71,22 +73,25 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
                     if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     }
-                    if (snapshot.data!
-                        .where((item) => item.status == 'confirmed')
-                        .isEmpty) {
+
+                    final reservationList = snapshot.data ?? [];
+
+                    final upcomingReservations =
+                        reservationList.where((item) {
+                          final start = DateTime.parse(item.checkIn!);
+                          return start.isAfter(today);
+                        }).toList();
+
+                    if (upcomingReservations.isEmpty) {
                       return const Center(
-                        child: Text('هیچ اقامتگاهی یافت نشد'),
+                        child: Text('هیچ رزرو آینده‌ای یافت نشد'),
                       );
                     }
-                    final residences = snapshot.data ?? [];
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount:
-                          residences
-                              .where((item) => item.status == 'confirmed')
-                              .length,
+                      itemCount: upcomingReservations.length,
                       itemBuilder: (context, index) {
-                        final item = residences[index];
+                        final item = upcomingReservations[index];
                         return Column(
                           children: [
                             VendorReservationCard(
@@ -103,33 +108,6 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
                 ),
               ),
 
-            // if (isBookedSelected)
-            //   Expanded(
-            //     child: ListView.builder(
-            //       scrollDirection: Axis.vertical,
-            //       shrinkWrap: true,
-            //       itemCount:
-            //           vendorReservationList
-            //               .where((item) => item.status == 'remaining')
-            //               .length,
-            //       itemBuilder: (context, index) {
-            //         final filteredList =
-            //             vendorReservationList
-            //                 .where((item) => item.status == 'remaining')
-            //                 .toList();
-            //         final item = filteredList[index];
-            //         return Column(
-            //           children: [
-            //             VendorReservationCard(
-            //               vendorReservation: item,
-            //               link: '/profile/my_residence/menu_residence/${widget.residence.id}/reservation_history/${item.id}',
-            //             ),
-            //             const SizedBox(height: 16),
-            //           ],
-            //         );
-            //       },
-            //     ),
-            //   ),
             if (!isBookedSelected)
               Expanded(
                 child: FutureBuilder(
@@ -141,28 +119,31 @@ class _ReservationHistoryScreenState extends State<ReservationHistoryScreen> {
                     if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     }
-                    if (snapshot.data!
-                        .where((item) => item.status == 'pending')
-                        .isEmpty) {
+
+                    final reservationList = snapshot.data ?? [];
+
+                    final pastReservations =
+                        reservationList.where((item) {
+                          final start = DateTime.parse(item.checkIn!);
+                          return !start.isAfter(today);
+                        }).toList();
+
+                    if (pastReservations.isEmpty) {
                       return const Center(
-                        child: Text('هیچ اقامتگاهی یافت نشد'),
+                        child: Text('هیچ رزرو گذشته یافت نشد'),
                       );
                     }
-                    final residences = snapshot.data ?? [];
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount:
-                          residences
-                              .where((item) => item.status == 'pending')
-                              .length,
+                      itemCount: pastReservations.length,
                       itemBuilder: (context, index) {
-                        final item = residences[index];
+                        final item = pastReservations[index];
                         return Column(
                           children: [
                             VendorReservationCard(
                               vendorReservation: item,
                               link:
-                                  '/profile/my_residence/menu_residence/${reservation!.residence!.id}/reservation_history/${item.id}',
+                                  '/profile/my_residence/menu_residence/${residence.id}/reservation_history/${item.id}',
                             ),
                             const SizedBox(height: 8),
                           ],
