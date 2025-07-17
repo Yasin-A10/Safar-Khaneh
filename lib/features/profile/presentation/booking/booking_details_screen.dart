@@ -5,12 +5,100 @@ import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
+import 'package:safar_khaneh/features/profile/data/vendor_reservation_service.dart';
 import 'package:safar_khaneh/widgets/map.dart';
 
-class BookingDetailsScreen extends StatelessWidget {
+class BookingDetailsScreen extends StatefulWidget {
   final UserReservationModel reservation;
 
   const BookingDetailsScreen({super.key, required this.reservation});
+
+  @override
+  State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+}
+
+class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
+  final VendorReservationService _vendorReservationService =
+      VendorReservationService();
+
+  void _handleCancelReservation(context) async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final start = DateTime.parse(widget.reservation.checkIn!);
+    final tomorrow = today.add(const Duration(days: 1));
+    // final yesterday = today.subtract(const Duration(days: 1));
+
+    if (!start.isAfter(today)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text(
+            'تاریخ رزرو گذشته است',
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    try {
+      if (start.isAfter(tomorrow)) {
+        await _vendorReservationService.cancelReservation(
+          widget.reservation.id!,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'رزرو با موفقیت لغو شد',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.success200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'امکان لغو رزرو وجود ندارد',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.error200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text('خطا در لغو رزرو', textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +109,35 @@ class BookingDetailsScreen extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: AppColors.white,
+          leading: PopupMenuButton(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              side: BorderSide(color: AppColors.primary800, width: 2),
+            ),
+            elevation: 8,
+            offset: const Offset(0, 48),
+            icon: const Icon(Iconsax.menu, color: AppColors.primary800),
+            onSelected: (value) {
+              if (value == 'deleteReservation') {
+                _handleCancelReservation(context);
+              }
+            },
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 'deleteReservation',
+                  child: Text(
+                    'لغو رزرو',
+                    style: TextStyle(
+                      color: AppColors.error200,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ];
+            },
+          ),
           title: const Text('اطلاعات اقامتگاه رزرو شده'),
           actions: [
             IconButton(
@@ -46,11 +163,11 @@ class BookingDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Hero(
-                        tag: 'bookedResidence-${reservation.id}',
+                        tag: 'bookedResidence-${widget.reservation.id}',
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.network(
-                            reservation.residence!.imageUrl!,
+                            widget.reservation.residence!.imageUrl!,
                             fit: BoxFit.cover,
                             height: 100,
                             width: 100,
@@ -63,7 +180,7 @@ class BookingDetailsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              reservation.residence!.title!,
+                              widget.reservation.residence!.title!,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -80,7 +197,7 @@ class BookingDetailsScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '${reservation.residence!.location!.city!.name}, ${reservation.residence!.location!.city!.province!.name}',
+                                  '${widget.reservation.residence!.location!.city!.name}, ${widget.reservation.residence!.location!.city!.province!.name}',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
@@ -101,7 +218,7 @@ class BookingDetailsScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 formatNumberToPersian(
-                                  reservation.residence!.pricePerNight!,
+                                  widget.reservation.residence!.pricePerNight!,
                                 ),
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -117,7 +234,7 @@ class BookingDetailsScreen extends StatelessWidget {
                         children: [
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              reservation.residence?.avgRating,
+                              widget.reservation.residence?.avgRating,
                             ),
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
@@ -137,15 +254,17 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  if (reservation.residence?.location?.lat != null &&
-                      reservation.residence?.location?.lng != null)
+                  if (widget.reservation.residence?.location?.lat != null &&
+                      widget.reservation.residence?.location?.lng != null)
                     SizedBox(
                       height: 300,
                       child: MapWidget(
                         latitude:
-                            reservation.residence!.location!.lat!.toString(),
+                            widget.reservation.residence!.location!.lat!
+                                .toString(),
                         longitude:
-                            reservation.residence!.location!.lng!.toString(),
+                            widget.reservation.residence!.location!.lng!
+                                .toString(),
                       ),
                     )
                   else
@@ -178,7 +297,7 @@ class BookingDetailsScreen extends StatelessWidget {
                           ),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              convertToJalaliDate(reservation.checkIn!),
+                              convertToJalaliDate(widget.reservation.checkIn!),
                             ),
                             style: const TextStyle(
                               fontSize: 16,
@@ -212,7 +331,7 @@ class BookingDetailsScreen extends StatelessWidget {
                           ),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              convertToJalaliDate(reservation.checkOut!),
+                              convertToJalaliDate(widget.reservation.checkOut!),
                             ),
                             style: const TextStyle(
                               fontSize: 16,
@@ -245,7 +364,8 @@ class BookingDetailsScreen extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            reservation.residence?.owner?.fullName ?? 'نامشخص',
+                            widget.reservation.residence?.owner?.fullName ??
+                                'نامشخص',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -278,7 +398,7 @@ class BookingDetailsScreen extends StatelessWidget {
                           ),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              reservation.residence?.capacity,
+                              widget.reservation.residence?.capacity,
                             ),
                             style: const TextStyle(
                               fontSize: 16,
@@ -312,7 +432,7 @@ class BookingDetailsScreen extends StatelessWidget {
                           ),
                           Text(
                             formatNumberToPersianWithoutSeparator(
-                              reservation.residence?.owner?.phoneNumber,
+                              widget.reservation.residence?.owner?.phoneNumber,
                             ),
                             style: const TextStyle(
                               fontSize: 16,
@@ -345,14 +465,14 @@ class BookingDetailsScreen extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            reservation.status == 'confirmed'
+                            widget.reservation.status == 'confirmed'
                                 ? 'تایید شده'
                                 : 'لغو شده',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color:
-                                  reservation.status == 'confirmed'
+                                  widget.reservation.status == 'confirmed'
                                       ? AppColors.success200
                                       : AppColors.error200,
                             ),

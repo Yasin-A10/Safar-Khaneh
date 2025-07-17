@@ -26,4 +26,19 @@ class VendorReservationService {
       throw Exception('خطا در دریافت رزروهای اقامتگاه: $e');
     }
   }
+
+  Future<void> cancelReservation(int reservationId) async {
+    try {
+      final response = await _client.post(
+        'reservations/$reservationId/cancel/',
+      );
+      if (response.statusCode == 204 || response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('خطا در لغو رزرو: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('خطا در لغو رزرو: $e');
+    }
+  }
 }
