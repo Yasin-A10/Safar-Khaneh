@@ -12,7 +12,8 @@ class MyBookingsScreen extends StatefulWidget {
 }
 
 class _MyBookingsScreenState extends State<MyBookingsScreen> {
-  UserReservationService userReservationService = UserReservationService();
+  final UserReservationService userReservationService =
+      UserReservationService();
 
   late Future<List<UserReservationModel>> _userReservations;
 
@@ -26,9 +27,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
     return Container(
       height: double.infinity,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           BookingTabBar(
@@ -39,34 +43,39 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
               });
             },
           ),
-
           const SizedBox(height: 16),
 
+          // لیست رزروهای آینده
           if (isBookedSelected)
             Expanded(
-              child: FutureBuilder(
+              child: FutureBuilder<List<UserReservationModel>>(
                 future: _userReservations,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(child: Text('خطا: ${snapshot.error}'));
                   }
-                  if (snapshot.data!
-                      .where((item) => item.status == 'confirmed')
-                      .isEmpty) {
-                    return const Center(child: Text('هیچ اقامتگاهی یافت نشد'));
-                  }
+
                   final residences = snapshot.data ?? [];
+
+                  final upcomingReservations =
+                      residences.where((item) {
+                        final start = DateTime.parse(item.checkIn!);
+                        return start.isAfter(today);
+                      }).toList();
+
+                  if (upcomingReservations.isEmpty) {
+                    return const Center(
+                      child: Text('هیچ رزرو آینده‌ای یافت نشد'),
+                    );
+                  }
+
                   return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount:
-                        residences
-                            .where((item) => item.status == 'confirmed')
-                            .length,
+                    itemCount: upcomingReservations.length,
                     itemBuilder: (context, index) {
-                      final item = residences[index];
+                      final item = upcomingReservations[index];
                       return Column(
                         children: [
                           BookedResidenceCard(reservation: item),
@@ -79,31 +88,37 @@ class _MyBookingsScreenState extends State<MyBookingsScreen> {
               ),
             ),
 
+          // لیست رزروهای در گذشته یا فعال
           if (!isBookedSelected)
             Expanded(
-              child: FutureBuilder(
+              child: FutureBuilder<List<UserReservationModel>>(
                 future: _userReservations,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                    return Center(child: Text('خطا: ${snapshot.error}'));
                   }
-                  if (snapshot.data!
-                      .where((item) => item.status == 'pending')
-                      .isEmpty) {
-                    return const Center(child: Text('هیچ اقامتگاهی یافت نشد'));
-                  }
+
                   final residences = snapshot.data ?? [];
+
+                  final pastReservations =
+                      residences.where((item) {
+                        final start = DateTime.parse(item.checkIn!);
+                        return !start.isAfter(today);
+                      }).toList();
+
+                  if (pastReservations.isEmpty) {
+                    return const Center(
+                      child: Text('هیچ رزروی در گذشته یافت نشد'),
+                    );
+                  }
+
                   return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount:
-                        residences
-                            .where((item) => item.status == 'pending')
-                            .length,
+                    itemCount: pastReservations.length,
                     itemBuilder: (context, index) {
-                      final item = residences[index];
+                      final item = pastReservations[index];
                       return Column(
                         children: [
                           BookedResidenceCard(reservation: item),

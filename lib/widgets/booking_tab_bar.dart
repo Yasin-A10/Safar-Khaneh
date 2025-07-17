@@ -13,9 +13,9 @@ class BookingTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: 54,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: const Color.fromARGB(255, 236, 236, 236),
         borderRadius: BorderRadius.circular(30),
       ),
       padding: const EdgeInsets.all(4),

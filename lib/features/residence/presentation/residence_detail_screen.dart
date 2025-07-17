@@ -430,7 +430,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                         color: AppColors.primary800,
                                         width: 2,
                                       ),
-                                      color: AppColors.white,
+                                      color: AppColors.primary800,
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black.withValues(
@@ -444,8 +444,8 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                     ),
                                     child: IconButton(
                                       icon: const Icon(
-                                        Iconsax.message,
-                                        color: AppColors.primary800,
+                                        Iconsax.message5,
+                                        color: AppColors.white,
                                       ),
                                       onPressed: () {
                                         _handleChat(context);
@@ -710,7 +710,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                           ],
                                         ),
                                         Text(
-                                          '${formatNumberToPersianWithoutSeparator(widget.residence.cleaningPrice.toString())} تومان',
+                                          '${formatNumberToPersian(widget.residence.cleaningPrice!)} تومان',
                                           style: TextStyle(
                                             color: AppColors.grey800,
                                             fontSize: 16,
@@ -743,7 +743,7 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                           ],
                                         ),
                                         Text(
-                                          '${formatNumberToPersianWithoutSeparator(widget.residence.servicesPrice.toString())} تومان',
+                                          '${formatNumberToPersian(widget.residence.servicesPrice!)} تومان',
                                           style: TextStyle(
                                             color: AppColors.grey800,
                                             fontSize: 16,
