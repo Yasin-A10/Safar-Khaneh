@@ -132,7 +132,7 @@ class VendorReservationCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               Text(
                                 formatNumberToPersianWithoutSeparator(
                                   convertToJalaliDate(
@@ -170,7 +170,7 @@ class VendorReservationCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               Text(
                                 formatNumberToPersianWithoutSeparator(
                                   vendorReservation.residence!.capacity
@@ -213,6 +213,37 @@ class VendorReservationCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            bottom: 28,
+            left: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color:
+                    vendorReservation.payment?.type == 'online' ||
+                            vendorReservation.payment?.type == 'wallet'
+                        ? AppColors.success200
+                        : AppColors.warning200,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  vendorReservation.payment?.type == 'online' ||
+                          vendorReservation.payment?.type == 'wallet'
+                      ? 'پرداخت شده'
+                      : 'پرداخت در محل',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ),
           Positioned(

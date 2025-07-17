@@ -16,6 +16,7 @@ class VendorReservationModel {
   String? updatedAt;
   Residence? residence;
   Owner? user;
+  Payment? payment; // اضافه کردن فیلد payment
 
   VendorReservationModel({
     this.id,
@@ -33,6 +34,7 @@ class VendorReservationModel {
     this.updatedAt,
     this.residence,
     this.user,
+    this.payment, // اضافه کردن به سازنده
   });
 
   VendorReservationModel.fromJson(Map<String, dynamic> json) {
@@ -51,13 +53,17 @@ class VendorReservationModel {
     updatedAt = json['updated_at'];
     residence =
         json['residence'] != null
-            ? new Residence.fromJson(json['residence'])
+            ? Residence.fromJson(json['residence'])
             : null;
-    user = json['user'] != null ? new Owner.fromJson(json['user']) : null;
+    user = json['user'] != null ? Owner.fromJson(json['user']) : null;
+    payment =
+        json['payment'] != null
+            ? Payment.fromJson(json['payment'])
+            : null; // اضافه کردن payment
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['check_in'] = this.checkIn;
     data['check_out'] = this.checkOut;
@@ -76,6 +82,9 @@ class VendorReservationModel {
     }
     if (this.user != null) {
       data['user'] = this.user!.toJson();
+    }
+    if (this.payment != null) {
+      data['payment'] = this.payment!.toJson(); // اضافه کردن به toJson
     }
     return data;
   }
@@ -141,11 +150,9 @@ class Residence {
     imageUrl = json['image_url'];
     isActive = json['is_active'];
     location =
-        json['location'] != null
-            ? new Location.fromJson(json['location'])
-            : null;
+        json['location'] != null ? Location.fromJson(json['location']) : null;
     createdAt = json['created_at'];
-    owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
+    owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     if (json['features'] != null) {
       features = <FeatureModel>[];
       json['features'].forEach((v) {
@@ -155,7 +162,7 @@ class Residence {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['title'] = this.title;
     data['description'] = this.description;
@@ -197,13 +204,13 @@ class Location {
   Location.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     address = json['address'];
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
+    city = json['city'] != null ? City.fromJson(json['city']) : null;
     lat = json['lat'];
     lng = json['lng'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['address'] = this.address;
     if (this.city != null) {
@@ -226,13 +233,11 @@ class City {
     id = json['id'];
     name = json['name'];
     province =
-        json['province'] != null
-            ? new Province.fromJson(json['province'])
-            : null;
+        json['province'] != null ? Province.fromJson(json['province']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['name'] = this.name;
     if (this.province != null) {
@@ -254,7 +259,7 @@ class Province {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['name'] = this.name;
     return data;
@@ -275,10 +280,39 @@ class Owner {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = this.id;
     data['full_name'] = this.fullName;
     data['phone_number'] = this.phoneNumber;
+    return data;
+  }
+}
+
+// کلاس جدید برای Payment
+class Payment {
+  int? id;
+  int? amount;
+  String? createdAt;
+  String? status;
+  String? type;
+
+  Payment({this.id, this.amount, this.createdAt, this.status, this.type});
+
+  Payment.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    amount = json['amount'];
+    createdAt = json['created_at'];
+    status = json['status'];
+    type = json['type'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = this.id;
+    data['amount'] = this.amount;
+    data['created_at'] = this.createdAt;
+    data['status'] = this.status;
+    data['type'] = this.type;
     return data;
   }
 }

@@ -467,14 +467,18 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                           Text(
                             widget.reservation.status == 'confirmed'
                                 ? 'تایید شده'
-                                : 'لغو شده',
+                                : widget.reservation.status == 'cancelled'
+                                ? 'لغو شده'
+                                : 'پرداخت ناموفق',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color:
                                   widget.reservation.status == 'confirmed'
                                       ? AppColors.success200
-                                      : AppColors.error200,
+                                      : widget.reservation.status == 'cancelled'
+                                      ? AppColors.error200
+                                      : AppColors.warning200,
                             ),
                           ),
                         ],

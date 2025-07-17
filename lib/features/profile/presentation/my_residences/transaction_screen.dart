@@ -234,7 +234,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           Padding(
                             padding: const EdgeInsets.only(right: 60.0),
                             child: Text(
-                              '${formatNumberToPersian(transaction.amount / 10)} تومان',
+                              '${formatNumberToPersian(transaction.amount)} تومان',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

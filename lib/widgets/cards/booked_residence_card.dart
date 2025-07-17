@@ -129,7 +129,7 @@ class BookedResidenceCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               Text(
                                 formatNumberToPersianWithoutSeparator(
                                   convertToJalaliDate(reservation.checkIn!),
@@ -165,7 +165,7 @@ class BookedResidenceCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(width: 16),
+                              SizedBox(width: 8),
                               Text(
                                 formatNumberToPersianWithoutSeparator(
                                   reservation.residence!.capacity.toString(),
@@ -218,7 +218,9 @@ class BookedResidenceCard extends StatelessWidget {
                 color:
                     reservation.status == 'confirmed'
                         ? AppColors.success200
-                        : AppColors.error200,
+                        : reservation.status == 'cancelled'
+                        ? AppColors.error200
+                        : AppColors.warning200,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomLeft: Radius.circular(10),
@@ -226,7 +228,11 @@ class BookedResidenceCard extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  reservation.status == 'confirmed' ? 'تایید شده' : 'لغو شده',
+                  reservation.status == 'confirmed'
+                      ? 'تایید شده'
+                      : reservation.status == 'cancelled'
+                      ? 'لغو شده'
+                      : 'پرداخت ناموفق',
                   style: TextStyle(
                     color: AppColors.white,
                     fontSize: 12,

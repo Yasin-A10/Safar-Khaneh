@@ -353,6 +353,48 @@ class ReservationHistoryDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Iconsax.money_time,
+                                  color: AppColors.grey400,
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'وضعیت پرداخت',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.grey400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              vendorReservation.payment?.type == 'online' ||
+                                      vendorReservation.payment?.type ==
+                                          'wallet'
+                                  ? 'پرداخت شده'
+                                  : 'پرداخت در محل',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    vendorReservation.payment?.type ==
+                                                'online' ||
+                                            vendorReservation.payment?.type ==
+                                                'wallet'
+                                        ? AppColors.success200
+                                        : AppColors.warning200,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ],
