@@ -165,7 +165,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       children: [
                         Text(
                           formatNumberToPersianWithoutSeparator(
-                            convertToJalaliTime(
+                            convertToJalaliDate(
                               chat.createdAt.toIso8601String(),
                             ),
                           ),
