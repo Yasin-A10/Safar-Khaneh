@@ -4,46 +4,18 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
+import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/data/service/chat_services.dart';
-import 'package:safar_khaneh/trash/models/comment_model.dart';
+import 'package:safar_khaneh/features/residence/data/comments_service.dart';
 import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
+import 'package:safar_khaneh/features/residence/data/residence_comments_model.dart';
 import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
-import 'package:safar_khaneh/widgets/inputs/text_field.dart';
+import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/map.dart';
 import 'package:safar_khaneh/widgets/comment_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-final List<CommentModel> comments = [
-  CommentModel(
-    id: 1,
-    name: 'جعفر غلام‌حسینی',
-    residenceId: 1,
-    text:
-        'اقامتگاه خوبی فقط یکم سقفش چکه میکرد که گفتم درست کنن و در اسرع وقت درستش کردن و اقامتگاه خوبی فقط یکم سقفش چکه میکرد که گفتم درست کنن و در اسرع وقت درستش کردن',
-    rating: 5,
-    createdAt: '2022-11-09T12:38:51.082843Z',
-  ),
-  CommentModel(
-    id: 2,
-    name: 'محمد کارگر',
-    residenceId: 1,
-    text:
-        'اقامتگاه خوبی فقط یکم سقفش چکه میکرد که گفتم درست کنن و در اسرع وقت درستش کردن',
-    rating: 5,
-    createdAt: '2021-06-09T12:38:51.082843Z',
-  ),
-  CommentModel(
-    id: 3,
-    name: 'محمد حسینی',
-    residenceId: 1,
-    text:
-        'اقامتگاه خوبی فقط یکم سقفش چکه میکرد که گفتم درست کنن و در اسرع وقت درستش کردن',
-    rating: 5,
-    createdAt: '2024-09-09T12:38:51.082843Z',
-  ),
-];
 
 class ResidenceDetailScreen extends StatefulWidget {
   final ResidenceModel residence;
@@ -60,10 +32,14 @@ class ResidenceDetailScreen extends StatefulWidget {
 }
 
 class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
+  final GlobalKey<FormState> _addCommentFormKey = GlobalKey<FormState>();
+
   final TextEditingController textController = TextEditingController();
-  final TextEditingController ratingController = TextEditingController();
+
   final BookmarkService _bookmarkService = BookmarkService();
   final ChatService _chatService = ChatService();
+  final CommentsService _commentsService = CommentsService();
+  late Future<List<CommentModel>> _commentsFuture;
 
   int? _bookmarkId;
 
@@ -71,7 +47,9 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
   void initState() {
     super.initState();
     textController.text = '';
-    ratingController.text = '';
+    _commentsFuture = _commentsService.getComments(
+      residenceId: widget.residence.id!,
+    );
     _loadBookmarkStatus();
   }
 
@@ -102,7 +80,6 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
   @override
   void dispose() {
     textController.dispose();
-    ratingController.dispose();
     super.dispose();
   }
 
@@ -126,7 +103,10 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                       style: TextStyle(color: AppColors.error200, fontSize: 16),
                     ),
                   ),
-                  Button(onPressed: () => context.go('/login'), label: 'ورود'),
+                  Button(
+                    onPressed: () => GoRouter.of(context).go('/login'),
+                    label: 'ورود',
+                  ),
                 ],
               ),
             ),
@@ -192,7 +172,37 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
     }
   }
 
-  void showCommentDialog(BuildContext context) {
+  void showCommentDialog(context) async {
+    final hasRefreshToken = await TokenStorage.hasRefreshToken();
+
+    if (!hasRefreshToken) {
+      showDialog(
+        context: context,
+        builder:
+            (context) => Directionality(
+              textDirection: TextDirection.rtl,
+              child: AlertDialog(
+                title: const Text('ورود به حساب'),
+                content: const Text('ابتدا وارد حساب کاربری خود شوید.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text(
+                      'انصراف',
+                      style: TextStyle(color: AppColors.error200, fontSize: 16),
+                    ),
+                  ),
+                  Button(
+                    onPressed: () => GoRouter.of(context).go('/login'),
+                    label: 'ورود',
+                  ),
+                ],
+              ),
+            ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) {
@@ -218,17 +228,17 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              InputTextField(
-                label: 'امتیاز (۱ تا ۵)',
-                initialValue: ratingController,
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16),
-              InputTextField(
-                label: 'متن نظر خود را وارد کنید',
-                maxLines: 4,
-                initialValue: textController,
-                keyboardType: TextInputType.text,
+              Form(
+                key: _addCommentFormKey,
+                child: InputTextFormField(
+                  label: 'متن نظر خود را وارد کنید',
+                  maxLines: 4,
+                  controller: textController,
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    return AppValidator.userName(value, fieldName: 'متن نظر');
+                  },
+                ),
               ),
             ],
           ),
@@ -240,11 +250,67 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                 style: TextStyle(color: AppColors.error200),
               ),
             ),
-            Button(onPressed: () => Navigator.pop(context), label: 'ثبت'),
+            Button(
+              onPressed: () {
+                _handleAddComment(context);
+              },
+              label: 'ثبت',
+            ),
           ],
         );
       },
     );
+  }
+
+  void _handleAddComment(context) async {
+    if (!_addCommentFormKey.currentState!.validate()) {
+      return;
+    }
+
+    try {
+      final comment = textController.text;
+      final response = await _commentsService.addComment(
+        residenceId: widget.residence.id!,
+        comment: comment,
+      );
+
+      if (response['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            content: Text(
+              'نظر شما با موفقیت ثبت شد',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: AppColors.success200,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        setState(() {
+          _commentsFuture = _commentsService.getComments(
+            residenceId: widget.residence.id!,
+          );
+        });
+        GoRouter.of(context).pop();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text('خطا در ثبت نظر', textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   void _handleChat(context) async {
@@ -847,25 +913,50 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  SizedBox(
-                                    height: 152,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemCount: comments.length,
-                                      itemBuilder: (context, index) {
-                                        final comment = comments[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                          ),
-                                          child: CommentWidget(
-                                            comment: comment,
-                                            maxLines: 3,
+                                  FutureBuilder(
+                                    future: _commentsFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text(
+                                            'خطا در دریافت نظرات ${snapshot.error}',
                                           ),
                                         );
-                                      },
-                                    ),
+                                      }
+                                      if (snapshot.data!.isEmpty) {
+                                        return const Center(
+                                          child: Text('نظری وجود ندارد'),
+                                        );
+                                      }
+                                      final comments = snapshot.data!;
+                                      return SizedBox(
+                                        height: 152,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          itemCount: comments.length,
+                                          itemBuilder: (context, index) {
+                                            final comment = comments[index];
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                  ),
+                                              child: CommentWidget(
+                                                comment: comment,
+                                                maxLines: 3,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
                                   ),
                                   const SizedBox(height: 16),
                                   Button(
@@ -888,37 +979,6 @@ class _ResidenceDetailScreenState extends State<ResidenceDetailScreen> {
               ),
             ),
 
-            // Positioned(
-            //   bottom: 100,
-            //   right: 16,
-            //   child: Container(
-            //     width: 56,
-            //     height: 56,
-            //     decoration: BoxDecoration(
-            //       shape: BoxShape.circle,
-            //       border: Border.all(color: AppColors.primary800, width: 2),
-            //       color: AppColors.white,
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.black.withValues(alpha: 0.2),
-            //           offset: const Offset(0, -2),
-            //           blurRadius: 16,
-            //           spreadRadius: 2,
-            //         ),
-            //       ],
-            //     ),
-            //     child: IconButton(
-            //       icon: const Icon(
-            //         Iconsax.message,
-            //         color: AppColors.primary800,
-            //       ),
-            //       onPressed: () {
-            //         _handleChat(context);
-            //       },
-            //       tooltip: 'شروع گفتگو',
-            //     ),
-            //   ),
-            // ),
             Positioned(
               bottom: 0,
               left: 0,

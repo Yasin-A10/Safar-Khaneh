@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/features/profile/presentation/chat_list_screen.dart';
+import 'package:safar_khaneh/features/profile/presentation/comment_list_screen.dart';
 import 'package:safar_khaneh/root/chat_screen.dart';
-import 'package:safar_khaneh/trash/models/my_residence_model.dart';
 import 'package:safar_khaneh/features/auth/presentation/forgot_password_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
@@ -164,8 +164,8 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.comments,
       builder: (context, state) {
-        final residence = state.extra as MyResidenceModel;
-        return CommentsScreen(residence: residence);
+        final contextModel = state.extra as ResidenceContextModel;
+        return CommentsScreen(contextModel: contextModel);
       },
     ),
 
@@ -177,6 +177,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.chatList,
       builder: (context, state) => const ChatListScreen(),
+    ),
+
+    GoRoute(
+      path: RoutePaths.commentList,
+      builder: (context, state) {
+        return const CommentListScreen();
+      },
     ),
 
     GoRoute(
@@ -257,7 +264,7 @@ final GoRouter appRouter = GoRouter(
     );
 
     if (!isLoggedIn && !isPublicRoute) return '/login';
-    if (isLoggedIn && currentPath == '/login') return '/home';
+    if (isLoggedIn && currentPath == '/login') return '/login';
     return null;
   },
 
@@ -276,7 +283,6 @@ class ResidenceContextModel {
   final VendorReservationModel? reservations;
   final PayoutModel? payout;
   // final TransactionModel? transactions;
-  // final CommentModel? comments;
 
   ResidenceContextModel({
     required this.residence,

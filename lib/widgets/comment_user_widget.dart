@@ -3,12 +3,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/features/residence/data/residence_comments_model.dart';
+import 'package:safar_khaneh/features/profile/data/review_model.dart';
 
-class CommentWidget extends StatelessWidget {
-  final CommentModel comment;
+class CommentUserWidget extends StatelessWidget {
+  final ReviewModel comment;
   final int maxLines;
-  const CommentWidget({
+  const CommentUserWidget({
     super.key,
     required this.comment,
     required this.maxLines,
@@ -31,12 +31,12 @@ class CommentWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                comment.user.fullName,
+                comment.residence.title,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               Text(
                 formatNumberToPersianWithoutSeparator(
-                  convertToJalaliDate(comment.createdAt),
+                  convertToJalaliDate(comment.createdAt.toString()),
                 ),
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
               ),

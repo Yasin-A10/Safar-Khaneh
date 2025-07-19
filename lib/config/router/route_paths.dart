@@ -21,6 +21,7 @@ class RoutePaths {
 
   static const String bookmark = '/profile/bookmark';
   static const String chatList = '/profile/chat_list';
+  static const String commentList = '/profile/comment_list';
 
   static const String residenceDetail = '/residence/:id';
   static const String requestToBook = '/residence/:id/request_to_book';

@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:safar_khaneh/config/router/app_router.dart';
+import 'package:safar_khaneh/features/profile/data/review_model.dart';
 import 'package:safar_khaneh/features/residence/data/comments_service.dart';
-import 'package:safar_khaneh/features/residence/data/residence_comments_model.dart';
-import 'package:safar_khaneh/widgets/comment_widget.dart';
+import 'package:safar_khaneh/widgets/comment_user_widget.dart';
 
-class CommentsScreen extends StatefulWidget {
-  final ResidenceContextModel contextModel;
-  const CommentsScreen({super.key, required this.contextModel});
+class CommentListScreen extends StatefulWidget {
+  const CommentListScreen({super.key});
 
   @override
-  State<CommentsScreen> createState() => _CommentsScreenState();
+  State<CommentListScreen> createState() => _CommentListScreenState();
 }
 
-class _CommentsScreenState extends State<CommentsScreen> {
+class _CommentListScreenState extends State<CommentListScreen> {
   final CommentsService _commentService = CommentsService();
-  late Future<List<CommentModel>> _comments;
+  late Future<List<ReviewModel>> _comments;
 
   @override
   void initState() {
     super.initState();
-    _comments = _commentService.getComments(
-      residenceId: widget.contextModel.residence.id!,
-    );
+    _comments = _commentService.getUserComments();
   }
 
   @override
@@ -61,7 +57,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       final comment = comments[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: CommentWidget(comment: comment, maxLines: 5),
+                        child: CommentUserWidget(comment: comment, maxLines: 5),
                       );
                     },
                   );
