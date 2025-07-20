@@ -48,6 +48,30 @@ class CommentsService {
     }
   }
 
+  Future<Map<String, String>> addReservationComment({
+    required int reservationId,
+    required String comment,
+    required int rating,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'reservation_id': reservationId,
+        'rating': rating,
+        'comment': comment,
+      });
+
+      final response = await _authApiClient.post('reviews/', data: formData);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return {'status': 'success'};
+      } else {
+        throw Exception('خطا در ثبت نظر: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('خطا در ارسال نظر: $e');
+    }
+  }
+
   Future<List<ReviewModel>> getUserComments() async {
     try {
       final response = await _authApiClient.get('reviews/user/');

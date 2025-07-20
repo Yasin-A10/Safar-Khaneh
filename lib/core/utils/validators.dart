@@ -92,4 +92,20 @@ class AppValidator {
     }
     return null;
   }
+
+  static String? rating(String? value, {String fieldName = 'امتیاز'}) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName نمی‌تواند خالی باشد';
+    }
+
+    final rating = int.tryParse(value.trim());
+    if (rating == null) {
+      return '$fieldName معتبر نیست';
+    }
+
+    if (rating < 1 || rating > 5) {
+      return '$fieldName باید حداقل ۱ و حداکثر ۵ باشد';
+    }
+    return null;
+  }
 }

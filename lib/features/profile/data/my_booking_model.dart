@@ -15,22 +15,25 @@ class UserReservationModel {
   String? createdAt;
   String? updatedAt;
   Residence? residence;
+  bool? hasReview;
 
-  UserReservationModel(
-      {this.id,
-      this.checkIn,
-      this.checkOut,
-      this.totalPrice,
-      this.guestCount,
-      this.status,
-      this.pricePerNightSnapshot,
-      this.cleaningPriceSnapshot,
-      this.servicesPriceSnapshot,
-      this.maxNightsStaySnapshot,
-      this.capacitySnapshot,
-      this.createdAt,
-      this.updatedAt,
-      this.residence});
+  UserReservationModel({
+    this.id,
+    this.checkIn,
+    this.checkOut,
+    this.totalPrice,
+    this.guestCount,
+    this.status,
+    this.pricePerNightSnapshot,
+    this.cleaningPriceSnapshot,
+    this.servicesPriceSnapshot,
+    this.maxNightsStaySnapshot,
+    this.capacitySnapshot,
+    this.createdAt,
+    this.updatedAt,
+    this.residence,
+    this.hasReview,
+  });
 
   UserReservationModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -46,9 +49,11 @@ class UserReservationModel {
     capacitySnapshot = json['capacity_snapshot'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    residence = json['residence'] != null
-        ? new Residence.fromJson(json['residence'])
-        : null;
+    residence =
+        json['residence'] != null
+            ? new Residence.fromJson(json['residence'])
+            : null;
+    hasReview = json['has_review'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +74,7 @@ class UserReservationModel {
     if (this.residence != null) {
       data['residence'] = this.residence!.toJson();
     }
+    data['has_review'] = this.hasReview;
     return data;
   }
 }
@@ -94,26 +100,27 @@ class Residence {
   Owner? owner;
   List<FeatureModel>? features;
 
-  Residence(
-      {this.id,
-      this.title,
-      this.description,
-      this.type,
-      this.avgRating,
-      this.ratingCount,
-      this.capacity,
-      this.maxNightsStay,
-      this.pricePerNight,
-      this.roomCount,
-      this.cleaningPrice,
-      this.servicesPrice,
-      this.status,
-      this.imageUrl,
-      this.isActive,
-      this.location,
-      this.createdAt,
-      this.owner,
-      this.features});
+  Residence({
+    this.id,
+    this.title,
+    this.description,
+    this.type,
+    this.avgRating,
+    this.ratingCount,
+    this.capacity,
+    this.maxNightsStay,
+    this.pricePerNight,
+    this.roomCount,
+    this.cleaningPrice,
+    this.servicesPrice,
+    this.status,
+    this.imageUrl,
+    this.isActive,
+    this.location,
+    this.createdAt,
+    this.owner,
+    this.features,
+  });
 
   Residence.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -131,9 +138,10 @@ class Residence {
     status = json['status'];
     imageUrl = json['image_url'];
     isActive = json['is_active'];
-    location = json['location'] != null
-        ? new Location.fromJson(json['location'])
-        : null;
+    location =
+        json['location'] != null
+            ? new Location.fromJson(json['location'])
+            : null;
     createdAt = json['created_at'];
     owner = json['owner'] != null ? new Owner.fromJson(json['owner']) : null;
     if (json['features'] != null) {
@@ -215,9 +223,10 @@ class City {
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    province = json['province'] != null
-        ? new Province.fromJson(json['province'])
-        : null;
+    province =
+        json['province'] != null
+            ? new Province.fromJson(json['province'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
