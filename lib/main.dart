@@ -5,7 +5,7 @@ import 'package:safar_khaneh/config/theme/app_theme.dart';
 import 'package:safar_khaneh/features/deep_links/deep_link_listener.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // for app_links
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
