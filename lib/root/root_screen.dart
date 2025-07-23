@@ -132,33 +132,6 @@ class _RootScreenState extends State<RootScreen> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          leading: PopupMenuButton(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              side: BorderSide(color: AppColors.primary800, width: 2),
-            ),
-            elevation: 8,
-            offset: const Offset(0, 48),
-            icon: const Icon(Iconsax.wallet_add, color: AppColors.primary800),
-            onSelected: (value) {
-              if (value == 'edit') {}
-            },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: 'edit',
-                  child: Text(
-                    'شارژ کیف پول',
-                    style: TextStyle(
-                      color: AppColors.primary800,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ];
-            },
-          ),
           title: Text(_appBarTitle),
           actions: [
             if (_currentIndex == 0)

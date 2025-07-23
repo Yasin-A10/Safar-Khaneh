@@ -107,9 +107,18 @@ class _RequestToBookScreenState extends State<RequestToBookScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: Text('خطایی رخ داد', textDirection: TextDirection.rtl),
+          backgroundColor: AppColors.error200,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     } finally {
       setState(() {
         _isLoading = false;
