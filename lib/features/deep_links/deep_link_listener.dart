@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/features/auth/data/verify_email.dart';
+import 'package:safar_khaneh/features/auth/data/models/verify_email_service.dart';
 
 class DeepLinkListener extends StatefulWidget {
   const DeepLinkListener({super.key, required this.child});

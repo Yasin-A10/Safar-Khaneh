@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/register_service.dart';
+import 'package:safar_khaneh/features/auth/data/models/register_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 

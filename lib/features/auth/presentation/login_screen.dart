@@ -4,7 +4,7 @@ import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/login_sevice.dart';
+import 'package:safar_khaneh/features/auth/data/models/login_sevice.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 

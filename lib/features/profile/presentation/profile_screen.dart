@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/logout_service.dart';
+import 'package:safar_khaneh/features/auth/data/models/logout_service.dart';
 import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/data/profile_services.dart';
 import 'package:safar_khaneh/features/profile/data/wallet_charge_service.dart';

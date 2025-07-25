@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
-import 'package:safar_khaneh/features/auth/data/forgot_password_service.dart';
+import 'package:safar_khaneh/features/auth/data/models/forgot_password_service.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 

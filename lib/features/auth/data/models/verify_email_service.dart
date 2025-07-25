@@ -25,7 +25,6 @@ class VerifyEmailService {
         };
       }
     } on DioException catch (e) {
-      // بررسی خطای دریافتی از سرور
       final errorMessage =
           e.response?.data?['message'] ??
           e.response?.data?['detail'] ??

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/features/auth/data/logout_service.dart';
+import 'package:safar_khaneh/features/auth/data/models/logout_service.dart';
 
 class RootScreen extends StatefulWidget {
   final Widget child;
