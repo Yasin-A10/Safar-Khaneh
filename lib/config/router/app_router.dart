@@ -9,10 +9,10 @@ import 'package:safar_khaneh/features/auth/presentation/reset_password_screen.da
 import 'package:safar_khaneh/features/deep_links/presentation/payment_failed_screen.dart';
 import 'package:safar_khaneh/features/deep_links/presentation/payment_success_screen.dart';
 import 'package:safar_khaneh/features/auth/presentation/verify_email_screen.dart';
-import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
-import 'package:safar_khaneh/features/profile/data/profile_model.dart';
-import 'package:safar_khaneh/features/profile/data/transaction_model.dart';
-import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/my_booking_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/profile_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/transaction_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/vendor_reservation_model.dart';
 import 'package:safar_khaneh/features/profile/presentation/bookmark_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/comments_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/my_residences/edit_residence_detail_screen.dart';

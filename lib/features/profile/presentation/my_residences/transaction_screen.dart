@@ -5,9 +5,9 @@ import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
-import 'package:safar_khaneh/features/profile/data/transaction_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/transaction_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
-import 'package:safar_khaneh/features/profile/data/transaction_services.dart';
+import 'package:safar_khaneh/features/profile/data/services/transaction_services.dart';
 
 class TransactionScreen extends StatefulWidget {
   final ResidenceContextModel contextModel;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:safar_khaneh/features/profile/data/review_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/review_model.dart';
 import 'package:safar_khaneh/features/residence/data/comments_service.dart';
 import 'package:safar_khaneh/widgets/comment_user_widget.dart';
 

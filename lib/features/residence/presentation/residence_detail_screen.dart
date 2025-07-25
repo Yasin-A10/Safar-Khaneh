@@ -7,7 +7,7 @@ import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/data/service/chat_services.dart';
 import 'package:safar_khaneh/features/residence/data/comments_service.dart';
-import 'package:safar_khaneh/features/profile/data/bookmark_sevice.dart';
+import 'package:safar_khaneh/features/profile/data/services/bookmark_sevice.dart';
 import 'package:safar_khaneh/features/residence/data/residence_comments_model.dart';
 import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';

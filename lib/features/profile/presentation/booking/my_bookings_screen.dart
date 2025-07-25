@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
-import 'package:safar_khaneh/features/profile/data/my_booking_service.dart';
+import 'package:safar_khaneh/features/profile/data/models/my_booking_model.dart';
+import 'package:safar_khaneh/features/profile/data/services/my_booking_service.dart';
 import 'package:safar_khaneh/widgets/booking_tab_bar.dart';
 import 'package:safar_khaneh/widgets/cards/booked_residence_card.dart';
 

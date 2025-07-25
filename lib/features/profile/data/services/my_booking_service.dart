@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/profile/data/my_booking_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/my_booking_model.dart';
 
 class UserReservationService {
   final AuthApiClient _client = AuthApiClient();

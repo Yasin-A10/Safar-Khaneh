@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/vendor_reservation_model.dart';
 
 class VendorReservationCard extends StatelessWidget {
   final String link;

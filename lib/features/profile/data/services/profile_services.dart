@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/profile/data/profile_model.dart';
+import 'package:safar_khaneh/features/profile/data/models/profile_model.dart';
 
 class ProfileService {
   final AuthApiClient _client = AuthApiClient();

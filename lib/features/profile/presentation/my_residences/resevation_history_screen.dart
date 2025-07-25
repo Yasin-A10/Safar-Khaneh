@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/config/router/app_router.dart';
-import 'package:safar_khaneh/features/profile/data/vendor_reservation_model.dart';
-import 'package:safar_khaneh/features/profile/data/vendor_reservation_service.dart';
+import 'package:safar_khaneh/features/profile/data/models/vendor_reservation_model.dart';
+import 'package:safar_khaneh/features/profile/data/services/vendor_reservation_service.dart';
 import 'package:safar_khaneh/widgets/booking_tab_bar.dart';
 import 'package:safar_khaneh/widgets/cards/vendor_reservation_card.dart';
 
