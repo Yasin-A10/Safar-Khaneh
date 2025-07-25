@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:safar_khaneh/features/search/data/residence_service.dart';
+import 'package:safar_khaneh/features/search/data/services/residence_service.dart';
 
 class ApiClient implements BaseApiClient {
   final Dio _dio;

@@ -14,7 +14,7 @@ import 'package:safar_khaneh/widgets/feature_selector.dart';
 import 'package:safar_khaneh/widgets/inputs/image_input.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/map_picker.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 
 class EditResidenceDetailScreen extends StatefulWidget {
   final ResidenceModel residence;

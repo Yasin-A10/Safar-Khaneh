@@ -26,7 +26,7 @@ import 'package:safar_khaneh/features/profile/presentation/request_to_add_reside
 import 'package:safar_khaneh/features/residence/data/models/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/presentation/checkout_screen.dart';
 import 'package:safar_khaneh/features/residence/presentation/request_to_book_screen.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 import 'package:safar_khaneh/root/not_found_screen.dart';
 import 'route_paths.dart';
 import 'package:safar_khaneh/features/profile/presentation/booking/booking_details_screen.dart';

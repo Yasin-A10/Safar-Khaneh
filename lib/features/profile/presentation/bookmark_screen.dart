@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/features/profile/data/services/bookmark_sevice.dart';
-import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/bookmark_residence_model.dart';
 import 'package:safar_khaneh/widgets/cards/bookmark_card.dart';
 
 class BookmarkScreen extends StatefulWidget {

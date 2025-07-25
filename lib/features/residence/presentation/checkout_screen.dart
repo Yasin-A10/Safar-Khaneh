@@ -9,7 +9,7 @@ import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/features/profile/data/services/profile_services.dart';
 import 'package:safar_khaneh/features/residence/data/models/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/data/services/reservation_create_service.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/counter.dart';
 import 'package:url_launcher/url_launcher_string.dart';

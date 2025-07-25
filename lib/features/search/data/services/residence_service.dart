@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:safar_khaneh/core/network/api_client.dart';
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 
 abstract class BaseApiClient {
   Future<Response> get(String path, {Map<String, dynamic>? queryParams});

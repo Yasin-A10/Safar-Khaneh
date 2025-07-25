@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/bookmark_residence_model.dart';
 
 class BookmarkService {
   final AuthApiClient _client = AuthApiClient();

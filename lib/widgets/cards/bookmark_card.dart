@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/features/profile/data/services/bookmark_sevice.dart';
-import 'package:safar_khaneh/features/search/data/bookmark_residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/bookmark_residence_model.dart';
 // import 'package:safar_khaneh/features/search/data/residence_model.dart';
 
 class BookmarkCard extends StatefulWidget {

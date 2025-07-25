@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 
 class MyResidenceService {
   final AuthApiClient _apiClient = AuthApiClient();

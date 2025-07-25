@@ -7,7 +7,7 @@ import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/data/models/chat_model.dart';
 import 'package:safar_khaneh/data/service/chat_notification_service.dart';
 import 'package:safar_khaneh/data/service/chat_services.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatListScreen extends StatefulWidget {

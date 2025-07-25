@@ -6,7 +6,7 @@ import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/data/api/geo_sevices.dart';
 import 'package:safar_khaneh/features/profile/data/services/request_to_add_service.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/image_input.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';

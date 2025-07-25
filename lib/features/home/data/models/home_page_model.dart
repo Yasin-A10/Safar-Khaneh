@@ -1,4 +1,4 @@
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 
 class HomePageModel {
   final List<ResidenceModel> topRatedResidences;

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:safar_khaneh/core/network/api_client.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 
 class GeoService {
   final ApiClient _apiClient = ApiClient();

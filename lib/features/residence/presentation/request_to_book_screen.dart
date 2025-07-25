@@ -8,7 +8,7 @@ import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/features/residence/data/models/calendar_model.dart';
 import 'package:safar_khaneh/features/residence/data/services/calendar_service.dart';
 import 'package:safar_khaneh/features/residence/data/services/reservation_calculate_service.dart';
-import 'package:safar_khaneh/features/search/data/residence_model.dart';
+import 'package:safar_khaneh/features/search/data/models/residence_model.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/persian_calendar.dart';

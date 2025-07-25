@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
-import 'package:safar_khaneh/features/search/data/residence_service.dart';
+import 'package:safar_khaneh/features/search/data/services/residence_service.dart';
 
 class AuthApiClient implements BaseApiClient {
   final Dio _dio;
