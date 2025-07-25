@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/api_client.dart';
-import 'package:safar_khaneh/features/home/data/home_page_model.dart';
+import 'package:safar_khaneh/features/home/data/models/home_page_model.dart';
 import 'package:safar_khaneh/features/search/data/residence_service.dart';
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
 import 'package:safar_khaneh/core/network/secure_token_storage.dart';
