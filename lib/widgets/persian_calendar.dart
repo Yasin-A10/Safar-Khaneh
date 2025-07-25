@@ -280,7 +280,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
-import 'package:safar_khaneh/features/residence/data/calendar_model.dart';
+import 'package:safar_khaneh/features/residence/data/models/calendar_model.dart';
 
 class PersianTableCalendar extends StatefulWidget {
   final List<CalendarModel> calendarData;

@@ -23,7 +23,7 @@ import 'package:safar_khaneh/features/profile/presentation/my_residences/resevat
 import 'package:safar_khaneh/features/profile/presentation/my_residences/transaction_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/personal_info_screen.dart';
 import 'package:safar_khaneh/features/profile/presentation/request_to_add_residence/request_to_add_residence_screen.dart';
-import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
+import 'package:safar_khaneh/features/residence/data/models/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/presentation/checkout_screen.dart';
 import 'package:safar_khaneh/features/residence/presentation/request_to_book_screen.dart';
 import 'package:safar_khaneh/features/search/data/residence_model.dart';

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
 import 'package:safar_khaneh/features/profile/data/models/review_model.dart';
-import 'package:safar_khaneh/features/residence/data/residence_comments_model.dart';
+import 'package:safar_khaneh/features/residence/data/models/residence_comments_model.dart';
 import 'package:safar_khaneh/core/network/api_client.dart';
 
 class CommentsService {

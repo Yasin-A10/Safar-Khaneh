@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/residence/data/checkout_model.dart';
+import 'package:safar_khaneh/features/residence/data/models/checkout_model.dart';
 
 class ReservationCalculateService {
   final AuthApiClient _client = AuthApiClient();

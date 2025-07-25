@@ -7,7 +7,7 @@ import 'package:safar_khaneh/core/utils/number_formater.dart';
 import 'package:safar_khaneh/core/utils/validators.dart';
 import 'package:safar_khaneh/features/profile/data/models/my_booking_model.dart';
 import 'package:safar_khaneh/features/profile/data/services/vendor_reservation_service.dart';
-import 'package:safar_khaneh/features/residence/data/comments_service.dart';
+import 'package:safar_khaneh/features/residence/data/services/comments_service.dart';
 import 'package:safar_khaneh/widgets/button.dart';
 import 'package:safar_khaneh/widgets/inputs/text_form_field.dart';
 import 'package:safar_khaneh/widgets/map.dart';

@@ -1,5 +1,5 @@
 import 'package:safar_khaneh/core/network/auth_api_client.dart';
-import 'package:safar_khaneh/features/residence/data/calendar_model.dart';
+import 'package:safar_khaneh/features/residence/data/models/calendar_model.dart';
 
 class ReservationCalendarService {
   final AuthApiClient _client = AuthApiClient();
