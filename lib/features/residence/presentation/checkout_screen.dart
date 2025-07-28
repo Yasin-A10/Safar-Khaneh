@@ -5,7 +5,6 @@ import 'package:safar_khaneh/config/router/app_router.dart';
 import 'package:safar_khaneh/core/constants/colors.dart';
 import 'package:safar_khaneh/core/utils/convert_to_jalali.dart';
 import 'package:safar_khaneh/core/utils/number_formater.dart';
-// import 'package:safar_khaneh/features/profile/data/profile_model.dart';
 import 'package:safar_khaneh/features/profile/data/services/profile_services.dart';
 import 'package:safar_khaneh/features/residence/data/models/checkout_model.dart';
 import 'package:safar_khaneh/features/residence/data/services/reservation_create_service.dart';
@@ -32,6 +31,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final ReservationCreateService _reservationCreateService =
       ReservationCreateService();
   int _walletBalance = 0;
+  String _selectedMethod = 'wallet';
+  int _guestCount = 1;
 
   Future<void> _loadProfile() async {
     final profile = await _walletService.fetchProfile();
@@ -46,8 +47,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     _loadProfile();
   }
 
-  String _selectedMethod = 'wallet';
-  int _guestCount = 1;
 
   void _handleCheckout(context) async {
     try {
@@ -153,6 +152,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           duration: const Duration(seconds: 5),
         ),
       );
+    } finally {
+      GoRouter.of(context).pop();
     }
   }
 
